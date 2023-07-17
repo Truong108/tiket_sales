@@ -187,7 +187,7 @@ function Goidichvu() {
               <Modal
                 title={<h5 style={{ textAlign: 'center', fontFamily: 'Montserrat', color: '#1E0D03',
                 fontSize: '24px',fontStyle: 'normal', fontWeight: '700', lineHeight: '30px',
-                  marginBottom: '30px' }}> kjansdjkasd Cập nhật thông tin gói vé</h5>}
+                  marginBottom: '30px' }}>  Cập nhật thông tin gói vé</h5>}
                 centered
                 open={modal1Open}
                 onCancel={() => setModal1Open(false)}
