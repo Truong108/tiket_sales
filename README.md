@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Em bị lỗi update lên gitHub nên em tạo 1 repository mới 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
