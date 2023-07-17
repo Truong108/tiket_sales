@@ -37,7 +37,7 @@ function Doisoatve() {
     console.log(date, dateString);
   };
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 9;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

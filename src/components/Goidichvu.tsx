@@ -51,6 +51,16 @@ function Goidichvu() {
       const handleChange = (value: string) => {
         console.log(`selected ${value}`);
       };
+
+      const itemsPerPage = 10;
+      const [currentPage, setCurrentPage] = useState<number>(1);
+      const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+      };
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+      const currentData = data.slice(startIndex, endIndex);
+
   return (
   <div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -164,7 +174,7 @@ function Goidichvu() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, index) =>{
+                {currentData.map((item, index) =>{
               let tdstyle = {};
               if(index%2 === 1){
                   tdstyle = {backgroundColor:"#F7F8FB"}
@@ -268,7 +278,13 @@ function Goidichvu() {
               </Modal>
             </table>
             <div className="direction-components" style={{display: 'flex',justifyContent: 'center'}}>
-             <Pagination defaultCurrent={1} total={50} />
+            <Pagination
+              current={currentPage}
+              defaultCurrent={1}
+              total={data.length}
+              pageSize={itemsPerPage}
+              onChange={handlePageChange}
+            />
             </div>
           </div>
 

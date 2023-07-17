@@ -49,7 +49,7 @@ function Quanlyve() {
     console.log('checked = ', checkedValues);
   };
   
-  const itemsPerPage = 8;
+  const itemsPerPage = 12;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
