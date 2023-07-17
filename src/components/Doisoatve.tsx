@@ -50,7 +50,7 @@ function Doisoatve() {
   <div className='ct'> 
       <div className='doisoatve'>
         <div className='bang2' id='bang2'>
-          <h1 className='danhsachve'>Đối Soát Vé </h1>
+          <h1 className='danhsachve'>Đối Soát Vé</h1>
           <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
           <div className='searchve'>
             <div className='timkiemsove col-auto col-sm-8'>
