@@ -15,6 +15,7 @@ import Quanlyve from './components/Quanlyve';
 import Doisoatve from './components/Doisoatve';
 import Goidichvu from './components/Goidichvu';
 import { BellOutlined, MailOutlined } from '@ant-design/icons';
+// import Danhsachsukien from './components/Danhsachsukien';
 
 const App = () => {
   return (
@@ -91,8 +92,8 @@ const App = () => {
         <Route path='/' element={<Home/>}/>
         <Route path='/quan-li-ve' element={<Quanlyve/>}/>
         <Route path='/doi-soat-ve' element={<Doisoatve/>}/>
-        {/* <Route path='/danh-sach-su-kien' element={< />}/>
-        <Route path='/quan-li-thiet-bi' element={< />}/> */}
+        {/* <Route path='/danh-sach-su-kien' element={<Danhsachsukien/>}/> */}
+        {/* <Route path='/quan-li-thiet-bi' element={< />}/> */}
         <Route path='/goi-dich-vu' element={<Goidichvu/>}/>
         </Routes>
         </div>

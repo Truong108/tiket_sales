@@ -1,18 +1,16 @@
-
+import { useState, useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { DatePicker, Radio, Checkbox, Row, Col, Pagination, Space, Modal, Button } from 'antd';
+import { DatePickerProps } from 'antd/lib/date-picker';
+import { RadioChangeEvent } from 'antd/lib/radio';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import '../css/styles.css';
-import { useEffect, useState } from "react";
 import api from '../firebase/firebaseAPI';
-import { collection, getDocs } from "firebase/firestore";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Space, Modal, DatePicker, Radio, RadioChangeEvent, Checkbox, Row, Col } from 'antd';
-
 import {} from '@ant-design/icons';
-import type { DatePickerProps } from 'antd';
-import {Pagination} from 'antd';
 import type { } from 'antd/es/config-provider';
-import { CheckboxValueType } from 'antd/es/checkbox/Group';
 
-interface datafirebase {
+interface DataFirebase {
   id: string;
   stt: number;
   bookingcode: string;
@@ -22,72 +20,118 @@ interface datafirebase {
   sove: string;
   congcheck: string;
 }
-function Quanlyve() {
-  const [data, setData] = useState<datafirebase[]>([]);
-  const [modal2Open, setModal2Open] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(api, "ticket"));
-      const fetchedData: datafirebase[] = [];
-      querySnapshot.forEach((doc) => {
-        fetchedData.push({ id: doc.id, ...doc.data() } as datafirebase);
-      });
-      setData(fetchedData);
-    };
-    fetchData();
-  }, []);
-  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString);
-  };
-  const [value, setValue] = useState(1);
-
-  const radioOnChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setValue(e.target.value);
-  };
-  const checkboxOnChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues);
-  };
+const Quanlyve = () => {
+    const [data, setData] = useState<DataFirebase[]>([]);
+    const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
+    const [modal2Open, setModal2Open] = useState(false);
+    const [selectedFromDate] = useState<Date | null>(null);
+    const [selectedToDate] = useState<Date | null>(null);
+    const [value, setValue] = useState<number>(1);
+    const [selectedCheckIn, setSelectedCheckIn] = useState<CheckboxValueType[]>([]);
+    const [selectAllCheckIn, setSelectAllCheckIn] = useState(false);
   
-  const itemsPerPage = 12;
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, data.length);
-  const currentData = data.slice(startIndex, endIndex);
-
+    useEffect(() => {
+      const fetchData = async () => {
+        const querySnapshot = await getDocs(collection(api, "ticket"));
+        const fetchedData: DataFirebase[] = [];
+        querySnapshot.forEach((doc) => {
+          fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
+        });
+        setData(fetchedData);
+        setFilteredData(fetchedData);
+      };
+      fetchData();
+    }, []);
+    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+      console.log(date, dateString);
+    };
+    const radioOnChange = (e: RadioChangeEvent) => {
+      console.log('radio checked', e.target.value);
+      setValue(e.target.value);
+    };
+    const checkboxOnChange = (checkedValues: CheckboxValueType[]) => {
+      console.log('checked = ', checkedValues);
+      // Kiểm tra nếu "Tất cả" được chọn, thì không cần kiểm tra các cổng check-in khác nữa
+      if (checkedValues.includes("Tất cả")) {
+        setSelectAllCheckIn(true);
+        setSelectedCheckIn(["Tất cả"]);
+      } else {
+        setSelectAllCheckIn(false);
+        setSelectedCheckIn(checkedValues);
+      }
+    };
+    const itemsPerPage = 12;
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+    const currentData = filteredData.slice(startIndex, endIndex);
+  
+    const handleFilterTickets = () => {
+      const selectedStatus = value;
+      const fromDate = selectedFromDate;
+      const toDate = selectedToDate;
+      // Lọc dựa trên các điều kiện đã chọn
+      const filteredData = data.filter((ticket) => {
+        if (selectedStatus !== 1) {
+          if (selectedStatus === 2 && ticket.tinhtrang !== 'Đã sử dụng') {
+            return false; 
+          }
+          if (selectedStatus === 3 && ticket.tinhtrang !== 'Chưa sử dụng') {
+            return false; 
+          }
+          if (selectedStatus === 4 && ticket.tinhtrang !== 'Hết hạn') {
+            return false; 
+          }
+        }
+        if (!selectAllCheckIn && selectedCheckIn.length > 0 && ticket.congcheck !== 'Cổng check-in đã chọn') {
+          if (!selectedCheckIn.includes(ticket.congcheck)) {
+            return false;
+          }
+        }
+        //kiểm tra ngày
+        if (fromDate && toDate) {
+          const ticketDate = new Date(ticket.ngaysudung);
+          if (ticketDate < fromDate || ticketDate > toDate) {
+            return false; 
+          }
+        }
+        return true;
+      });
+    setFilteredData(filteredData);
+    setModal2Open(false);
+    };
   return (
-  <div>
+    <div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className='bang' id='bang2'>
           <h1 className='danhsachve'>Danh sách vé</h1>
-         
-        <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
-          <div className='searchve'>
-            <div className='timkiemsove col-auto col-sm-8'>
-              <input className="search__input" type="text" placeholder="Search" />
+
+          <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
+            <div className='searchve'>
+              <div className='timkiemsove col-auto col-sm-8'>
+                <input className="search__input" type="text" placeholder="Search" />
+              </div>
             </div>
-          </div>
-          <div>
-            <Space wrap style={{marginRight: '30px'}}>
-              <Button danger onClick={() => setModal2Open(true)} style={{marginTop: '10px'}}>
+            <div>
+              <Space wrap style={{ marginRight: '30px' }}>
+                <Button danger onClick={() => setModal2Open(true)} style={{ marginTop: '10px' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{marginBottom: '5px'}}>
                   <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="#FF993C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <p style={{display: 'inline', marginLeft: '10px', fontFamily: 'Montserrat',fontSize: '18px',fontStyle: 'normal',
                   fontWeight: '700',lineHeight: '26px', color: '#FF993C'}}>Lọc vé</p>
-              </Button>
-              <Modal
-                title={<h5 style={{ textAlign: 'center', fontFamily: 'Montserrat', color: '#1E0D03',
-                fontSize: '24px',fontStyle: 'normal', fontWeight: '700', lineHeight: '30px' }}>Lọc vé</h5>}
-                centered
-                open={modal2Open}
-                onCancel={() => setModal2Open(false)}
-                footer={null}
+                </Button>
+                <Modal
+                  title={<h5 style={{ textAlign: 'center', fontFamily: 'Montserrat', color: '#1E0D03', fontSize: '24px', fontStyle: 'normal', fontWeight: '700', lineHeight: '30px' }}>Lọc vé</h5>}
+                  centered
+                  open={modal2Open}
+                  onCancel={() => setModal2Open(false)}
+                  footer={null}
                 >
-                <div className='tndn'>
+                   <div className='tndn'>
                 <div className='texttrongloc'>
                   <p className='tungayy'>Từ ngày</p>
                   <p className='denngayy'>Đến ngày</p>
@@ -135,19 +179,17 @@ function Quanlyve() {
                       </Row>
                     </Checkbox.Group>
                  </div>
-                <Space wrap style={{ marginTop: '22px', justifyContent: 'center' }}>
-                  <Button danger onClick={() => setModal2Open(false)} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', 
-                  fontSize: '18px', fontWeight: '700', lineHeight: '26px', marginLeft: '150px', color: '#FF993C'}}>Lọc</Button>
-                </Space>
-              </Modal>
-              <Button danger style={{fontFamily: 'Montserrat',fontSize: '18px',fontStyle: 'normal',
-              fontWeight: '700',lineHeight: '26px', marginTop: '10px', color: '#FF993C'}}>Xuất file (.csv)</Button>
-            </Space>
+                  <Space wrap style={{ marginTop: '22px', justifyContent: 'center' }}>
+                    <Button danger onClick={handleFilterTickets} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', fontSize: '18px', fontWeight: '700', lineHeight: '26px', marginLeft: '150px', color: '#FF993C' }}>Lọc</Button>
+                  </Space>
+                </Modal>
+                <Button danger style={{ fontFamily: 'Montserrat', fontSize: '18px', fontStyle: 'normal', fontWeight: '700', lineHeight: '26px', marginTop: '10px', color: '#FF993C' }}>Xuất file (.csv)</Button>
+              </Space>
+            </div>
           </div>
-        </div>
-        <div className="content">
+          <div className="content">
             <table className="table tableshow">
-              <thead>
+            <thead>
                 <tr>
                   <th style={{background:"#F1F4F8"}}>STT</th>
                   <th style={{background:"#F1F4F8"}}>Booking code</th>
@@ -178,21 +220,20 @@ function Quanlyve() {
                 })}
               </tbody>
             </table>
-            <div className="direction-components" style={{display: 'flex',justifyContent: 'center'}}>
-            <Pagination
-              current={currentPage}
-              defaultCurrent={1}
-              total={data.length}
-              pageSize={itemsPerPage}
-              onChange={handlePageChange}
-            />
+            <div className="direction-components" style={{ display: 'flex', justifyContent: 'center' }}>
+              <Pagination
+                current={currentPage}
+                defaultCurrent={1}
+                total={filteredData.length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+              />
             </div>
           </div>
-      </div>
+        </div>
       </div>
     </div>
-  
   );
-};
+}
 
 export default Quanlyve;
