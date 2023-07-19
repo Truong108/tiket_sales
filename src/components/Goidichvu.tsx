@@ -7,12 +7,11 @@ import { FormOutlined } from '@ant-design/icons';
 import '../css/styles.css';
 import type { } from 'antd/es/config-provider';
 import { useEffect, useState } from 'react';
-import {collection, getDocs } from 'firebase/firestore';
+import {addDoc, collection, getDocs } from 'firebase/firestore';
 import api from '../firebase/firebaseAPI';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-
 dayjs.extend(customParseFormat)
 
 interface datafirebase {
@@ -31,6 +30,37 @@ function Goidichvu() {
     const [modal1Open, setModal1Open] = useState(false);
     const [modal2Open, setModal2Open] = useState(false);
     const [data, setData] = useState<datafirebase[]>([]);
+    const [tengoive, setTenGoiVe] = useState('');
+    const [napdung, setNgayApDung] = useState<Date | null>(null);
+    const [nhethan, setNgayHetHan] = useState<Date | null>(null);
+    const [giave, setGiaVeLe] = useState<string >();
+    const [giacombo, setGiaVeCombo1] = useState<string>();
+    const [giacombo2, setGiaVeCombo2] = useState<string>();
+    const [tinhTrang, setTinhTrang] = useState<string>('Đang áp dụng');
+    const handleSave = async () => {
+      try {
+        const goive = {
+          tengoive,
+          napdung,
+          nhethan,
+          giave,
+          giacombo,
+          giacombo2,
+          tinhTrang,
+        };
+        await addDoc(collection(api, "goive"), goive);
+        setModal2Open(false);
+        setTenGoiVe('');
+        setNgayApDung(null);
+        setNgayHetHan(null);
+        setGiaVeLe("");
+        setGiaVeCombo1("");
+        setGiaVeCombo2("");
+        setTinhTrang('Đang áp dụng');
+      } catch (error) {
+        console.error('Lỗi khi thêm gói vé:', error);
+      }
+    };
     const onChange: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
       };
@@ -51,7 +81,6 @@ function Goidichvu() {
       const handleChange = (value: string) => {
         console.log(`selected ${value}`);
       };
-
       const itemsPerPage = 10;
       const [currentPage, setCurrentPage] = useState<number>(1);
       const handlePageChange = (page: number) => {
@@ -60,28 +89,33 @@ function Goidichvu() {
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = Math.min(startIndex + itemsPerPage, data.length);
       const currentData = data.slice(startIndex, endIndex);
-
-  return (
-  <div>
+    return (
+    <div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className='bang4' id='bang4'>
           <h1 className='danhsachgoive'>Danh sách gói vé</h1>
         <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
           <div className='searchve'>
             <div className='timkiemsove col-auto col-sm-8'>
-              <input className="search__input" type="text" placeholder="Search" />
+              <input className="search__input" type="text" placeholder="Tìm bằng số vé" />
             </div>
           </div>
           <div>
             <Space wrap style={{marginRight: '30px'}}>
-            <Button danger style={{fontFamily: 'Montserrat',fontSize: '15px',fontStyle: 'normal',
-              fontWeight: '700',lineHeight: '26px', color: '#FF993C'}}>Xuất file (.csv)</Button>
-              <Button type="primary" danger onClick={() => setModal2Open(true)}>
+            <Button danger style={{fontFamily: 'Montserrat',
+              fontSize: '15px',fontStyle: 'normal',
+              fontWeight: '700',lineHeight: '26px', 
+              width: '127px', height: '42px',
+              color: '#FF993C'}}>Xuất file (.csv)</Button>
+              <Button style={{width: '127px', height: '42px'}} 
+              type="primary" danger onClick={() => setModal2Open(true)}>
                 Thêm gói vé
               </Button>
               <Modal
-                title={<h5 style={{ textAlign: 'center', fontFamily: 'Montserrat', color: '#1E0D03',
-                fontSize: '24px',fontStyle: 'normal', fontWeight: '700', lineHeight: '30px' }}>Thêm gói vé</h5>}
+                title={<h5 style={{ textAlign: 'center', 
+                fontFamily: 'Montserrat', color: '#1E0D03',
+                fontSize: '24px',fontStyle: 'normal', 
+                fontWeight: '700', lineHeight: '30px'}}>Thêm gói vé</h5>}
                 centered
                 open={modal2Open}
                 onCancel={() => setModal2Open(false)}
@@ -90,22 +124,28 @@ function Goidichvu() {
                 <div className='tndn'>
                 <div className='textgv'>
                   <p className='tengv'>Tên gói vé *</p>
-                  <Input placeholder="Nhập tên gói vé" style={{width: '50%'}}/>
+                  <Input placeholder="Nhập tên gói vé" style={{width: '50%'}} 
+                  onChange={(e) => setTenGoiVe(e.target.value)}/>
                 </div>
                 <div className='lichtronglocve'>
                 <div style={{ display: 'flex' }}>
-                    <p style={{ marginRight: '130px', marginTop: '15px',fontFamily: 'Montserrat',
-                  fontSize: '16px', fontStyle: 'normal', fontWeight: '600', lineHeight: '26px' }}>Ngày áp dụng</p>
-                    <p style={{marginTop: '15px', fontFamily: 'Montserrat',
-                   fontSize: '16px', fontStyle: 'normal', fontWeight: '600', lineHeight: '26px'}}>Ngày hết hạn</p>
+                  <p style={{ marginRight: '130px', marginTop: '15px',
+                  fontFamily: 'Montserrat',
+                  fontSize: '16px', fontStyle: 'normal', 
+                  fontWeight: '600', lineHeight: '26px' }}>Ngày áp dụng</p>
+                  <p style={{marginTop: '15px', 
+                  fontFamily: 'Montserrat',
+                  fontSize: '16px', fontStyle: 'normal', 
+                  fontWeight: '600', lineHeight: '26px'}}>Ngày hết hạn</p>
                 </div>
                 <div style={{ display: 'flex' }}>
                 <Space direction="vertical" style={{marginRight: '10px'}}>
                 <DatePicker onChange={onChange} />
                 </Space>
                 <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
-                <Space direction="vertical" style={{ marginLeft: '10px', marginRight: '10px' }}>
-                    <DatePicker onChange={onChange} />
+                <Space direction="vertical" style={{ marginLeft: '10px', 
+                marginRight: '10px' }}>
+                <DatePicker onChange={onChange} />
                 </Space>
                 <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
                 </div>
@@ -115,17 +155,19 @@ function Goidichvu() {
                   <div>
                     <p>Giá vé áp dụng</p>
                   <Checkbox onChange={CheckboxOnChange}>Vé lẻ (vnđ/vé) với giá</Checkbox>
-                  <Input placeholder="Giá vé" style={{width: '35%', background: '#F1F4F8'}}/> 
+                  <Input placeholder="Giá vé" style={{width: '35%', background: '#F1F4F8'}} 
+                  onChange={(e) => setGiaVeLe(e.target.value)}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                   </div>
                  <div style={{marginTop: '10px'}}>
                   <Checkbox onChange={CheckboxOnChange}>Combo vé với giá</Checkbox>
-                  <Input placeholder="Giá vé" style={{width: '25%', background: '#F1F4F8'}}/> 
+                  <Input placeholder="Giá vé" style={{width: '25%', background: '#F1F4F8'}} 
+                  onChange={(e) => setGiaVeCombo1(e.target.value)}/> 
                   <p style={{display: 'inline', marginLeft: '5px', marginRight: '10px', fontWeight: 'normal'}}>/</p> 
-                  <Input placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
+                  <Input onChange={(e) => setGiaVeCombo2(e.target.value)}
+                  placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                  </div>
-                  
                 </div>
                 <div className='congcheckin'>
                     <p>Tình trạng</p>
@@ -138,8 +180,7 @@ function Goidichvu() {
                           label: 'Chọn tình trạng',
                           options: [
                             { label: 'Đang áp dụng', value: 'Đang áp dụng' },
-                            { label: 'Chưa sử dụng', value: 'Chưa sử dụng' },
-                            { label: 'Hết hạn', value: 'Hết hạn'},
+                            { label: 'Tắt', value: 'Tắt'},
                           ],
                         },
                       ]}
@@ -148,16 +189,20 @@ function Goidichvu() {
                     lineHeight: 'normal'}}>* là thông tin bắt buộc</p>
                  </div>
                  <Space wrap style={{ marginTop: '22px', marginLeft: '70px'}}>
-                  <Button danger onClick={() => setModal2Open(false)} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', 
-                    fontSize: '18px', fontWeight: '700', lineHeight: '26px', color: '#FF993C'}}>Hủy</Button>
-                  <Button danger onClick={() => setModal2Open(false)} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', 
-                    fontSize: '18px', fontWeight: '700', lineHeight: '26px', background: '#FF993C', color: '#FFF'}}>Lưu</Button>
+                  <Button danger onClick={() => setModal2Open(false)} style={{ width: '160px', 
+                    height: '40px', fontFamily: 'Montserrat', 
+                    fontSize: '18px', fontWeight: '700', 
+                    lineHeight: '26px', color: '#FF993C'}}>Hủy</Button>
+                  <Button danger onClick={handleSave} style={{ width: '160px', 
+                    height: '40px', fontFamily: 'Montserrat', 
+                    fontSize: '18px', fontWeight: '700', 
+                    lineHeight: '26px', background: '#FF993C',
+                    color: '#FFF'}}>Lưu</Button>
                 </Space>
               </Modal>
             </Space>
           </div>
         </div>
-
         <div className="content">
             <table className="table tableshow">
               <thead>
@@ -189,7 +234,7 @@ function Goidichvu() {
                       <td style={tdstyle}>{item.giave}</td>
                       <td style={tdstyle}>{item.giacombo}</td>
                       <td style={tdstyle}>{item.tinhtrang}</td>
-                      <td style={tdstyle} onClick={() => setModal1Open(true)}><FormOutlined /> {item.capnhat}</td>
+                      <td style={tdstyle} onClick={() => setModal1Open(true)}><FormOutlined /> Cập nhật</td>
                     </tr>
                   )
                 })}
@@ -243,7 +288,9 @@ function Goidichvu() {
                  <div style={{marginTop: '10px'}}>
                   <Checkbox onChange={CheckboxOnChange}>Combo vé với giá</Checkbox>
                   <Input placeholder="Giá vé" style={{width: '25%', background: '#F1F4F8'}}/> 
-                  <p style={{display: 'inline', marginLeft: '5px', marginRight: '10px', fontWeight: 'normal'}}>/</p> 
+                  <p style={{display: 'inline', 
+                  marginLeft: '5px', marginRight: '10px', 
+                  fontWeight: 'normal'}}>/</p> 
                   <Input placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                  </div>
@@ -260,20 +307,25 @@ function Goidichvu() {
                           label: 'Chọn tình trạng',
                           options: [
                             { label: 'Đang áp dụng', value: 'Đang áp dụng' },
-                            { label: 'Chưa sử dụng', value: 'Chưa sử dụng' },
-                            { label: 'Hết hạn', value: 'Hết hạn'},
+                            { label: 'Tắt', value: 'Tắt'},
                           ],
                         },
                       ]}
                     />
-                    <p style={{fontFamily: 'Montserrat',fontSize: '12px',fontStyle: 'italic',fontWeight: '400',
+                    <p style={{fontFamily: 'Montserrat',fontSize: '12px',
+                    fontStyle: 'italic',fontWeight: '400',
                     lineHeight: 'normal'}}>* là thông tin bắt buộc</p>
                  </div>
                 <Space wrap style={{ marginTop: '22px', marginLeft: '70px'}}>
-                  <Button danger onClick={() => setModal1Open(false)} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', 
-                    fontSize: '18px', fontWeight: '700', lineHeight: '26px', color: '#FF993C'}}>Hủy</Button>
-                  <Button danger onClick={() => setModal1Open(false)} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', 
-                    fontSize: '18px', fontWeight: '700', lineHeight: '26px', background: '#FF993C', color: '#FFF'}}>Lưu</Button>
+                  <Button danger onClick={() => setModal1Open(false)} style={{ width: '160px', 
+                  height: '40px', fontFamily: 'Montserrat', 
+                    fontSize: '18px', fontWeight: '700', 
+                    lineHeight: '26px', color: '#FF993C'}}>Hủy</Button>
+                  <Button danger onClick={() => setModal1Open(false)} style={{ width: '160px', 
+                    height: '40px', fontFamily: 'Montserrat', 
+                    fontSize: '18px', fontWeight: '700', 
+                    lineHeight: '26px', background: '#FF993C', 
+                    color: '#FFF'}}>Lưu</Button>
                 </Space>
               </Modal>
             </table>
@@ -287,11 +339,9 @@ function Goidichvu() {
             />
             </div>
           </div>
-
       </div>
       </div>
     </div>
-  
   );
 };
 

@@ -29,7 +29,15 @@ const Quanlyve = () => {
     const [value, setValue] = useState<number>(1);
     const [selectedCheckIn, setSelectedCheckIn] = useState<CheckboxValueType[]>([]);
     const [selectAllCheckIn, setSelectAllCheckIn] = useState(false);
-  
+    const [locve, setLocve] = useState<string>("")
+    const handlevaluesove = (e: React.ChangeEvent<HTMLInputElement>) =>{
+        setLocve(e.target.value)
+    }
+    let fillLocve: DataFirebase[];
+    fillLocve = data.filter((item) => {
+      return typeof item.sove === 'string' && item.sove.includes(locve);
+    });
+    
     useEffect(() => {
       const fetchData = async () => {
         const querySnapshot = await getDocs(collection(api, "ticket"));
@@ -51,7 +59,6 @@ const Quanlyve = () => {
     };
     const checkboxOnChange = (checkedValues: CheckboxValueType[]) => {
       console.log('checked = ', checkedValues);
-      // Kiểm tra nếu "Tất cả" được chọn, thì không cần kiểm tra các cổng check-in khác nữa
       if (checkedValues.includes("Tất cả")) {
         setSelectAllCheckIn(true);
         setSelectedCheckIn(["Tất cả"]);
@@ -68,12 +75,11 @@ const Quanlyve = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
     const currentData = filteredData.slice(startIndex, endIndex);
-  
+   
     const handleFilterTickets = () => {
       const selectedStatus = value;
       const fromDate = selectedFromDate;
       const toDate = selectedToDate;
-      // Lọc dựa trên các điều kiện đã chọn
       const filteredData = data.filter((ticket) => {
         if (selectedStatus !== 1) {
           if (selectedStatus === 2 && ticket.tinhtrang !== 'Đã sử dụng') {
@@ -91,7 +97,6 @@ const Quanlyve = () => {
             return false;
           }
         }
-        //kiểm tra ngày
         if (fromDate && toDate) {
           const ticketDate = new Date(ticket.ngaysudung);
           if (ticketDate < fromDate || ticketDate > toDate) {
@@ -100,32 +105,37 @@ const Quanlyve = () => {
         }
         return true;
       });
-    setFilteredData(filteredData);
-    setModal2Open(false);
+      setFilteredData(filteredData);
+      setModal2Open(false);
     };
   return (
     <div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className='bang' id='bang2'>
           <h1 className='danhsachve'>Danh sách vé</h1>
-
           <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
             <div className='searchve'>
               <div className='timkiemsove col-auto col-sm-8'>
-                <input className="search__input" type="text" placeholder="Search" />
+                <input className="search__input" type="text" placeholder="Tìm bằng số vé"  onChange={handlevaluesove} />
               </div>
             </div>
             <div>
               <Space wrap style={{ marginRight: '30px' }}>
-                <Button danger onClick={() => setModal2Open(true)} style={{ marginTop: '10px' }}>
+                <Button danger onClick={() => setModal2Open(true)} style={{ width: '127px', height: '42px'}}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{marginBottom: '5px'}}>
                   <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="#FF993C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                <p style={{display: 'inline', marginLeft: '10px', fontFamily: 'Montserrat',fontSize: '18px',fontStyle: 'normal',
-                  fontWeight: '700',lineHeight: '26px', color: '#FF993C'}}>Lọc vé</p>
+                <p style={{display: 'inline', 
+                marginLeft: '10px', 
+                fontFamily: 'Montserrat',fontSize: '18px',
+                fontStyle: 'normal',
+                fontWeight: '700',lineHeight: '26px', 
+                color: '#FF993C'}}>Lọc vé</p>
                 </Button>
                 <Modal
-                  title={<h5 style={{ textAlign: 'center', fontFamily: 'Montserrat', color: '#1E0D03', fontSize: '24px', fontStyle: 'normal', fontWeight: '700', lineHeight: '30px' }}>Lọc vé</h5>}
+                  title={<h5 style={{ textAlign: 'center', fontFamily: 'Montserrat', 
+                  color: '#1E0D03', fontSize: '24px', fontStyle: 'normal', 
+                  fontWeight: '700', lineHeight: '30px' }}>Lọc vé</h5>}
                   centered
                   open={modal2Open}
                   onCancel={() => setModal2Open(false)}
@@ -180,10 +190,16 @@ const Quanlyve = () => {
                     </Checkbox.Group>
                  </div>
                   <Space wrap style={{ marginTop: '22px', justifyContent: 'center' }}>
-                    <Button danger onClick={handleFilterTickets} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', fontSize: '18px', fontWeight: '700', lineHeight: '26px', marginLeft: '150px', color: '#FF993C' }}>Lọc</Button>
+                    <Button danger onClick={handleFilterTickets} style={{ width: '160px', 
+                    height: '40px', fontFamily: 'Montserrat', fontSize: '18px', 
+                    fontWeight: '700', lineHeight: '26px', 
+                    marginLeft: '150px', color: '#FF993C' }}>Lọc</Button>
                   </Space>
                 </Modal>
-                <Button danger style={{ fontFamily: 'Montserrat', fontSize: '18px', fontStyle: 'normal', fontWeight: '700', lineHeight: '26px', marginTop: '10px', color: '#FF993C' }}>Xuất file (.csv)</Button>
+                <Button danger style={{ fontFamily: 'Montserrat', 
+                fontSize: '18px', fontStyle: 'normal', 
+                fontWeight: '700', lineHeight: '26px', color: '#FF993C',
+                width: '150px', height: '42px' }}>Xuất file (.csv)</Button>
               </Space>
             </div>
           </div>
@@ -201,7 +217,23 @@ const Quanlyve = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentData.map((item, index) => {
+                {locve ? fillLocve.map((item, index) => {
+                  let tdstyle = {};
+                  if (index % 2 === 1) {
+                    tdstyle = { backgroundColor: "#F7F8FB" };
+                  }
+                  return (
+                    <tr key={item.stt}>
+                      <td style={tdstyle}>{startIndex + index + 1}</td>
+                      <td style={tdstyle}>{item.bookingcode}</td>
+                      <td style={tdstyle}>{item.sove}</td>
+                      <td style={tdstyle}>{item.tinhtrang}</td>
+                      <td style={tdstyle}>{item.ngaysudung}</td>
+                      <td style={tdstyle}>{item.ngayxuatve}</td>
+                      <td style={tdstyle}>{item.congcheck}</td>
+                    </tr>
+                  );
+                }) : currentData.map((item, index) => {
                   let tdstyle = {};
                   if (index % 2 === 1) {
                     tdstyle = { backgroundColor: "#F7F8FB" };

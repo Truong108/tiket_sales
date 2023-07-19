@@ -53,7 +53,6 @@ interface datafirebase {
     };
   
     const handleFilterTickets = () => {
-      // Chỉ thực hiện lọc dữ liệu khi biến flag isFiltering là true
       if (isFiltering) {
         const filteredData = data.filter((ticket) => {
           if (value !== 1) {
@@ -75,7 +74,14 @@ interface datafirebase {
     const handleFilterButtonClick = () => {
       setIsFiltering(true);
     };
-
+    const [locve, setLocve] = useState<string>("")
+    const handlevaluesove = (e: React.ChangeEvent<HTMLInputElement>) =>{
+      setLocve(e.target.value)
+    }
+    let fillSoatve: datafirebase[];
+    fillSoatve = data.filter((item) => {
+      return typeof item.sove === 'string' && item.sove.includes(locve);
+    });
   return (
     <div className='ct'> 
         <div className='doisoatve'>
@@ -84,13 +90,16 @@ interface datafirebase {
             <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
             <div className='searchve'>
               <div className='timkiemsove col-auto col-sm-8'>
-                <input className="search__input" type="text" placeholder="Search" />
+                <input className="search__input" type="text" placeholder="Tìm bằng số vé" onChange={handlevaluesove}/>
               </div>
             </div>
             <div>
               <Space wrap style={{marginRight: '30px'}}>
-                <Button type="primary" danger style={{fontFamily: 'Montserrat',fontSize: '18px',fontStyle: 'normal',
-                fontWeight: '700',lineHeight: '26px', marginTop: '10px', backgroundColor:"#FF993C"}}>
+                <Button type="primary" danger style={{fontFamily: 'Montserrat',
+                fontSize: '18px',fontStyle: 'normal',
+                fontWeight: '700',lineHeight: '26px', 
+                width: '157px', height: '42px',
+                marginTop: '10px', backgroundColor:"#FF993C"}}>
                   Chốt đối soát 
                 </Button>
               </Space>
@@ -109,7 +118,7 @@ interface datafirebase {
                   </tr>
                 </thead>
                 <tbody>
-                {currentData.map((item, index) => {
+                {locve ? fillSoatve.map((item, index) => {
                   let tdstyle = {};
                   if (index % 2 === 1) {
                     tdstyle = { backgroundColor: "#F7F8FB" };
@@ -124,7 +133,23 @@ interface datafirebase {
                       <td style={tdstyle}>{item.doisoat}</td>
                     </tr>
                   );
-                })}
+                }) : currentData.map((item, index) => {
+                  let tdstyle = {};
+                  if (index % 2 === 1) {
+                    tdstyle = { backgroundColor: "#F7F8FB" };
+                  }
+                  return (
+                    <tr key={item.stt}>
+                      <td style={tdstyle}>{index + 1}</td>
+                      <td style={tdstyle}>{item.sove}</td>
+                      <td style={tdstyle}>{item.ngaysudung}</td>
+                      <td style={tdstyle}>{item.tenloaive}</td>
+                      <td style={tdstyle}>{item.congcheckin}</td>
+                      <td style={tdstyle}>{item.doisoat}</td>
+                    </tr>
+                  );
+                })
+              }
                 </tbody>
               </table>
               <div className="direction-components" style={{display: 'flex',justifyContent: 'center'}}>
@@ -171,8 +196,10 @@ interface datafirebase {
              </Space>
            </div>
            <Space wrap style={{ marginTop: '22px', justifyContent: 'center' }}>
-            <Button danger onClick={handleFilterButtonClick} style={{ width: '160px', height: '40px', fontFamily: 'Montserrat', 
-            fontSize: '18px', fontWeight: '700', lineHeight: '26px', color: '#FF993C' }}>Lọc</Button>
+            <Button danger onClick={handleFilterButtonClick} style={{ width: '160px', 
+            height: '40px', fontFamily: 'Montserrat', 
+            fontSize: '18px', fontWeight: '700', 
+            lineHeight: '26px', color: '#FF993C' }}>Lọc</Button>
         </Space>
         </div>
         </div>  
@@ -180,6 +207,4 @@ interface datafirebase {
     
     );
   };
-  
-
 export default Doisoatve;
