@@ -1,8 +1,8 @@
 
 import '../css/styles.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Checkbox, DatePicker, DatePickerProps, Input, Modal, Pagination, Select, Space, TimePicker } from 'antd';
-
+import { Button, Checkbox, DatePicker, DatePickerProps, Input, Modal,
+        Pagination, Select, Space, TimePicker } from 'antd';
 import { FormOutlined } from '@ant-design/icons';
 import '../css/styles.css';
 import type { } from 'antd/es/config-provider';
@@ -23,6 +23,7 @@ interface datafirebase {
     nhethan: string;
     giave: string;
     giacombo: string;
+    sovecombo: string;
     tinhtrang: string;
     capnhat: string;
 }
@@ -35,17 +36,26 @@ function Goidichvu() {
     const [nhethan, setNgayHetHan] = useState<Date | null>(null);
     const [giave, setGiaVeLe] = useState<string >();
     const [giacombo, setGiaVeCombo1] = useState<string>();
-    const [giacombo2, setGiaVeCombo2] = useState<string>();
+    const [sovecombo, setGiaVeCombo2] = useState<string>();
     const [tinhTrang, setTinhTrang] = useState<string>('Đang áp dụng');
+    const [isSelected, setIsSelected] = useState(false);
     const handleSave = async () => {
       try {
+      const giaCombo1ToSave = isSelected ? giacombo : null;
+      const giaCombo2ToSave = isSelected ? sovecombo : null;
+      // Kiểm tra xem checkbox đã được chọn và có giá combo mới được lưu
+      if (isSelected && (!giaCombo1ToSave || !giaCombo2ToSave)) {
+        // Nếu checkbox đã được chọn nhưng giá combo không hợp lệ (bị thiếu) thì hiển thị cảnh báo
+        console.error('Vui lòng nhập đầy đủ giá combo');
+        return;
+      }
         const goive = {
           tengoive,
           napdung,
           nhethan,
           giave,
-          giacombo,
-          giacombo2,
+          giacombo: giaCombo1ToSave,
+          sovecombo: giaCombo2ToSave,
           tinhTrang,
         };
         await addDoc(collection(api, "goive"), goive);
@@ -154,17 +164,18 @@ function Goidichvu() {
                 <div className='ttsudung'>
                   <div>
                     <p>Giá vé áp dụng</p>
-                  <Checkbox onChange={CheckboxOnChange}>Vé lẻ (vnđ/vé) với giá</Checkbox>
+                  <Checkbox checked={isSelected} onChange={CheckboxOnChange}>Vé lẻ (vnđ/vé) với giá</Checkbox>
                   <Input placeholder="Giá vé" style={{width: '35%', background: '#F1F4F8'}} 
                   onChange={(e) => setGiaVeLe(e.target.value)}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                   </div>
                  <div style={{marginTop: '10px'}}>
-                  <Checkbox onChange={CheckboxOnChange}>Combo vé với giá</Checkbox>
+                  <Checkbox checked={isSelected} onChange={() => setIsSelected(!isSelected)}>Combo vé với giá</Checkbox>
                   <Input placeholder="Giá vé" style={{width: '25%', background: '#F1F4F8'}} 
+                  value={giacombo}
                   onChange={(e) => setGiaVeCombo1(e.target.value)}/> 
                   <p style={{display: 'inline', marginLeft: '5px', marginRight: '10px', fontWeight: 'normal'}}>/</p> 
-                  <Input onChange={(e) => setGiaVeCombo2(e.target.value)}
+                  <Input value={sovecombo} onChange={(e) => setGiaVeCombo2(e.target.value)}
                   placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                  </div>
@@ -219,7 +230,7 @@ function Goidichvu() {
                 </tr>
               </thead>
               <tbody>
-                {currentData.map((item, index) =>{
+              {currentData.map((item, index) =>{
               let tdstyle = {};
               if(index%2 === 1){
                   tdstyle = {backgroundColor:"#F7F8FB"}
@@ -232,7 +243,7 @@ function Goidichvu() {
                       <td style={tdstyle}>{item.napdung}</td>
                       <td style={tdstyle}>{item.nhethan}</td>
                       <td style={tdstyle}>{item.giave}</td>
-                      <td style={tdstyle}>{item.giacombo}</td>
+                      <td style={tdstyle}>{item.giacombo} / {item.sovecombo} Vé</td>
                       <td style={tdstyle}>{item.tinhtrang}</td>
                       <td style={tdstyle} onClick={() => setModal1Open(true)}><FormOutlined /> Cập nhật</td>
                     </tr>
@@ -261,10 +272,10 @@ function Goidichvu() {
                 </div>
                 <div className='lichtronglocve'>
                 <div style={{ display: 'flex' }}>
-                    <p style={{ marginRight: '130px', marginTop: '15px',fontFamily: 'Montserrat',
+                  <p style={{ marginRight: '130px', marginTop: '15px',fontFamily: 'Montserrat',
                   fontSize: '16px', fontStyle: 'normal', fontWeight: '600', lineHeight: '26px' }}>Ngày áp dụng</p>
-                    <p style={{marginTop: '15px', fontFamily: 'Montserrat',
-                   fontSize: '16px', fontStyle: 'normal', fontWeight: '600', lineHeight: '26px'}}>Ngày hết hạn</p>
+                  <p style={{marginTop: '15px', fontFamily: 'Montserrat',
+                  fontSize: '16px', fontStyle: 'normal', fontWeight: '600', lineHeight: '26px'}}>Ngày hết hạn</p>
                 </div>
                 <div style={{ display: 'flex' }}>
                 <Space direction="vertical" style={{marginRight: '10px'}}>
@@ -279,8 +290,8 @@ function Goidichvu() {
                 </div>
                 </div>
                 <div className='ttsudung'>
-                  <div>
-                    <p>Giá vé áp dụng</p>
+                <div>
+                  <p>Giá vé áp dụng</p>
                   <Checkbox onChange={CheckboxOnChange}>Vé lẻ (vnđ/vé) với giá</Checkbox>
                   <Input placeholder="Giá vé" style={{width: '35%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
@@ -294,7 +305,6 @@ function Goidichvu() {
                   <Input placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                  </div>
-                  
                 </div>
                 <div className='congcheckin'>
                     <p>Tình trạng</p>
