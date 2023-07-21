@@ -9,6 +9,7 @@ interface datafirebase {
     id: string;
     stt: number;
     sove: string;
+    tensukien: string;
     ngaysudung: string;
     tenloaive: string;
     congcheckin: string;
@@ -111,6 +112,7 @@ interface datafirebase {
                   <tr>
                     <th style={{background:"#F1F4F8"}}>STT</th>
                     <th style={{background:"#F1F4F8"}}>Số vé</th>
+                    <th style={{background:"#F1F4F8"}}>Tên sự kiện</th>
                     <th style={{background:"#F1F4F8"}}>Ngày sử dụng</th>
                     <th style={{background:"#F1F4F8"}}>Tên loại vé</th>
                     <th style={{background:"#F1F4F8"}}>Cổng check-in</th>
@@ -123,14 +125,22 @@ interface datafirebase {
                   if (index % 2 === 1) {
                     tdstyle = { backgroundColor: "#F7F8FB" };
                   }
+                  let doisoatStyle = {}
+                  if(item.doisoat ==="Đã đối soát"){
+                      doisoatStyle ={color:"#FD5959"}
+                  }
+                   if(item.doisoat ==="Chưa đối soát"){
+                    doisoatStyle={color:"#A5A8B1"}
+                   }
                   return (
                     <tr key={item.stt}>
                       <td style={tdstyle}>{index + 1}</td>
                       <td style={tdstyle}>{item.sove}</td>
+                      <td style={tdstyle}>{item.tensukien}</td>
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.tenloaive}</td>
                       <td style={tdstyle}>{item.congcheckin}</td>
-                      <td style={tdstyle}>{item.doisoat}</td>
+                      <td style={tdstyle}><span style={doisoatStyle}>{item.doisoat}</span></td>
                     </tr>
                   );
                 }) : currentData.map((item, index) => {
@@ -138,14 +148,22 @@ interface datafirebase {
                   if (index % 2 === 1) {
                     tdstyle = { backgroundColor: "#F7F8FB" };
                   }
+                  let doisoatStyle = {}
+                  if(item.doisoat ==="Đã đối soát"){
+                      doisoatStyle ={color:"#FD5959", fontStyle: 'italic'}
+                  }
+                   if(item.doisoat ==="Chưa đối soát"){
+                    doisoatStyle={color:"#A5A8B1", fontStyle: 'italic'}
+                   }
                   return (
                     <tr key={item.stt}>
                       <td style={tdstyle}>{index + 1}</td>
                       <td style={tdstyle}>{item.sove}</td>
+                      <td style={tdstyle}>{item.tensukien}</td>
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.tenloaive}</td>
                       <td style={tdstyle}>{item.congcheckin}</td>
-                      <td style={tdstyle}>{item.doisoat}</td>
+                      <td style={tdstyle}><span style={doisoatStyle}>{item.doisoat}</span></td>
                     </tr>
                   );
                 })

@@ -270,20 +270,32 @@ const Quanlyve = () => {
                   }
                   let tinhtrangStyle = {}
                   if(item.tinhtrang ==="Đã sử dụng"){
-                      tinhtrangStyle ={color:"#919DBA", backgroundColor:"#EAF1F8", border:"1px solid #919DBA", padding:"5px 10px", borderRadius:"8px"}
+                      tinhtrangStyle ={color:"#919DBA", 
+                      backgroundColor:"#EAF1F8", 
+                      border:"1px solid #919DBA", 
+                      padding:"5px 10px", 
+                      borderRadius:"8px"}
                   }
                    if(item.tinhtrang ==="Chưa sử dụng"){
-                    tinhtrangStyle={color:"#03AC00", backgroundColor:"#EAF1F8" , border:"1px solid #03AC00", padding:"5px 10px", borderRadius:"8px"}
+                    tinhtrangStyle={color:"#03AC00", 
+                    backgroundColor:"#EAF1F8" , 
+                    border:"1px solid #03AC00", 
+                    padding:"5px 10px", 
+                    borderRadius:"8px"}
                    }
                    if(item.tinhtrang ==="Hết hạn"){
-                    tinhtrangStyle={color:"#FD5959", backgroundColor:"#F8EBE8" , border:"1px solid #FD5959", padding:"5px 10px", borderRadius:"8px"}
+                    tinhtrangStyle={color:"#FD5959", 
+                    backgroundColor:"#F8EBE8" , 
+                    border:"1px solid #FD5959", 
+                    padding:"5px 10px", 
+                    borderRadius:"8px"}
                    }
                   return (
                     <tr key={item.stt}>
                       <td style={tdstyle}>{startIndex + index + 1}</td>
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
-                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.tinhtrang}</span> </td>
+                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>

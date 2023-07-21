@@ -36,19 +36,25 @@ function Goidichvu() {
     const [nhethan, setNgayHetHan] = useState<Date | null>(null);
     const [giave, setGiaVeLe] = useState<string >();
     const [giacombo, setGiaVeCombo1] = useState<string>();
-    const [sovecombo, setGiaVeCombo2] = useState<string>();
-    const [tinhTrang, setTinhTrang] = useState<string>('Đang áp dụng');
+    const [sovecombo, setSovecombo] = useState<string>();
+    const [tinhtrang, setTinhTrang] = useState<string>('Đang áp dụng');
     const [isSelected, setIsSelected] = useState(false);
+
+    const handleGiaVeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setGiaVeLe(e.target.value);
+    };
+    const handleGiaComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setGiaVeCombo1(e.target.value);
+    };
+    const handleSoVeComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSovecombo(e.target.value);
+    };
+    const displaySoveCombo = giacombo !== "" && sovecombo !== "" ? ` / ${sovecombo} Vé` : "";
+
     const handleSave = async () => {
       try {
       const giaCombo1ToSave = isSelected ? giacombo : null;
       const giaCombo2ToSave = isSelected ? sovecombo : null;
-      // Kiểm tra xem checkbox đã được chọn và có giá combo mới được lưu
-      if (isSelected && (!giaCombo1ToSave || !giaCombo2ToSave)) {
-        // Nếu checkbox đã được chọn nhưng giá combo không hợp lệ (bị thiếu) thì hiển thị cảnh báo
-        console.error('Vui lòng nhập đầy đủ giá combo');
-        return;
-      }
         const goive = {
           tengoive,
           napdung,
@@ -56,7 +62,7 @@ function Goidichvu() {
           giave,
           giacombo: giaCombo1ToSave,
           sovecombo: giaCombo2ToSave,
-          tinhTrang,
+          tinhtrang,
         };
         await addDoc(collection(api, "goive"), goive);
         setModal2Open(false);
@@ -65,7 +71,7 @@ function Goidichvu() {
         setNgayHetHan(null);
         setGiaVeLe("");
         setGiaVeCombo1("");
-        setGiaVeCombo2("");
+        setSovecombo("");
         setTinhTrang('Đang áp dụng');
       } catch (error) {
         console.error('Lỗi khi thêm gói vé:', error);
@@ -90,6 +96,7 @@ function Goidichvu() {
       };
       const handleChange = (value: string) => {
         console.log(`selected ${value}`);
+        setTinhTrang(value);
       };
       const itemsPerPage = 10;
       const [currentPage, setCurrentPage] = useState<number>(1);
@@ -164,18 +171,25 @@ function Goidichvu() {
                 <div className='ttsudung'>
                   <div>
                     <p>Giá vé áp dụng</p>
-                  <Checkbox checked={isSelected} onChange={CheckboxOnChange}>Vé lẻ (vnđ/vé) với giá</Checkbox>
+                  <Checkbox onChange={CheckboxOnChange}>Vé lẻ (vnđ/vé) với giá</Checkbox>
                   <Input placeholder="Giá vé" style={{width: '35%', background: '#F1F4F8'}} 
                   onChange={(e) => setGiaVeLe(e.target.value)}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                   </div>
                  <div style={{marginTop: '10px'}}>
-                  <Checkbox checked={isSelected} onChange={() => setIsSelected(!isSelected)}>Combo vé với giá</Checkbox>
+                 <Checkbox onChange={() => setIsSelected(!isSelected)}>Combo vé với giá</Checkbox>
+                {isSelected && (
+                  <>
+                    <Input placeholder="Giá vé combo" value={giacombo} onChange={handleGiaComboChange} />
+                    <Input placeholder="Số vé combo" value={sovecombo} onChange={handleSoVeComboChange} />
+                  </>
+                )}
+                {displaySoveCombo}
                   <Input placeholder="Giá vé" style={{width: '25%', background: '#F1F4F8'}} 
                   value={giacombo}
-                  onChange={(e) => setGiaVeCombo1(e.target.value)}/> 
+                  onChange={handleGiaVeChange}/> 
                   <p style={{display: 'inline', marginLeft: '5px', marginRight: '10px', fontWeight: 'normal'}}>/</p> 
-                  <Input value={sovecombo} onChange={(e) => setGiaVeCombo2(e.target.value)}
+                  <Input value={sovecombo} onChange={(e) => setSovecombo(e.target.value)}
                   placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                  </div>
@@ -183,6 +197,7 @@ function Goidichvu() {
                 <div className='congcheckin'>
                     <p>Tình trạng</p>
                     <Select
+                      value={tinhtrang}
                       defaultValue="Đang áp dụng"
                       style={{ width: 200 }}
                       onChange={handleChange}
@@ -235,6 +250,21 @@ function Goidichvu() {
               if(index%2 === 1){
                   tdstyle = {backgroundColor:"#F7F8FB"}
               }
+              let tinhtrangStyle = {}
+                  if(item.tinhtrang ==="Đang áp dụng"){
+                      tinhtrangStyle ={color:"#03AC00", 
+                      backgroundColor:"#DEF7E0", 
+                      border:"1px solid #919DBA", 
+                      padding:"5px 10px", 
+                      borderRadius:"8px"}
+                  }
+                   if(item.tinhtrang ==="Tắt"){
+                    tinhtrangStyle={color:"#FD5959", 
+                    backgroundColor:"#F8EBE8" , 
+                    border:"1px solid #03AC00", 
+                    padding:"5px 10px", 
+                    borderRadius:"8px"}
+                   }
                   return (
                     <tr key={item.stt}>
                       <td style={tdstyle}>{index + 1}</td>
@@ -243,8 +273,10 @@ function Goidichvu() {
                       <td style={tdstyle}>{item.napdung}</td>
                       <td style={tdstyle}>{item.nhethan}</td>
                       <td style={tdstyle}>{item.giave}</td>
-                      <td style={tdstyle}>{item.giacombo} / {item.sovecombo} Vé</td>
-                      <td style={tdstyle}>{item.tinhtrang}</td>
+                      <td style={tdstyle}>
+                      {item.giacombo && item.sovecombo ? `${item.giacombo} / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
+                      </td>
+                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
                       <td style={tdstyle} onClick={() => setModal1Open(true)}><FormOutlined /> Cập nhật</td>
                     </tr>
                   )
