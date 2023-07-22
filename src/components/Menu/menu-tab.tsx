@@ -35,13 +35,22 @@ const Menu = () => {
             <span>Đối soát vé</span>
           </li>
           </NavLink>
+          {/* <NavLink to="/danh-sach-su-kien"  className="nav-link">
+          <li
+            className={activeItem === "list" ? "active" : ""}
+            onClick={() => handleTabClick("list")}
+          >
+            <i className="bi bi-file-earmark-text"></i>
+            <span>Danh sách sự kiện</span>
+          </li>
+          </NavLink> */}
           <li className={activeItem === "setting" ? "active" : ""}>
             <i className="bi bi-gear"></i>
             <span>Cài đặt</span>
           </li>
           <NavLink to="/goi-dich-vu" className="nav-link">
           <li onClick={() => handleTabClick("setting")}>
-            <span style={{marginLeft:"80px" }}>Gói dịch vụ</span>
+            <span style={{marginLeft: '80px', fontWeight: 'bold'}}>Gói dịch vụ</span>
           </li>
           </NavLink>
         </div>

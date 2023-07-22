@@ -40,16 +40,16 @@ function Goidichvu() {
     const [tinhtrang, setTinhTrang] = useState<string>('Đang áp dụng');
     const [isSelected, setIsSelected] = useState(false);
 
-    const handleGiaVeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setGiaVeLe(e.target.value);
-    };
+    // const handleGiaVeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //   setGiaVeLe(e.target.value);
+    // };
     const handleGiaComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setGiaVeCombo1(e.target.value);
     };
     const handleSoVeComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSovecombo(e.target.value);
     };
-    const displaySoveCombo = giacombo !== "" && sovecombo !== "" ? ` / ${sovecombo} Vé` : "";
+    // const displaySoveCombo = giacombo !== "" && sovecombo !== "" ? ` / ${sovecombo} Vé` : "";
 
     const handleSave = async () => {
       try {
@@ -178,20 +178,14 @@ function Goidichvu() {
                   </div>
                  <div style={{marginTop: '10px'}}>
                  <Checkbox onChange={() => setIsSelected(!isSelected)}>Combo vé với giá</Checkbox>
-                {isSelected && (
                   <>
-                    <Input placeholder="Giá vé combo" value={giacombo} onChange={handleGiaComboChange} />
-                    <Input placeholder="Số vé combo" value={sovecombo} onChange={handleSoVeComboChange} />
+                    <Input placeholder="Giá vé"  style={{width: '25%', background: '#F1F4F8'}} 
+                     value={giacombo} onChange={handleGiaComboChange} />
+                     <p style={{display: 'inline', marginLeft: '5px', marginRight: '10px', fontWeight: 'normal'}}>/</p> 
+                    <Input placeholder="Số vé"  style={{width: '25%', background: '#F1F4F8'}} 
+                     value={sovecombo} onChange={handleSoVeComboChange} />
+                      <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                   </>
-                )}
-                {displaySoveCombo}
-                  <Input placeholder="Giá vé" style={{width: '25%', background: '#F1F4F8'}} 
-                  value={giacombo}
-                  onChange={handleGiaVeChange}/> 
-                  <p style={{display: 'inline', marginLeft: '5px', marginRight: '10px', fontWeight: 'normal'}}>/</p> 
-                  <Input value={sovecombo} onChange={(e) => setSovecombo(e.target.value)}
-                  placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
-                  <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                  </div>
                 </div>
                 <div className='congcheckin'>
