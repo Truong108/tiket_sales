@@ -39,18 +39,12 @@ function Goidichvu() {
     const [sovecombo, setSovecombo] = useState<string>();
     const [tinhtrang, setTinhTrang] = useState<string>('Đang áp dụng');
     const [isSelected, setIsSelected] = useState(false);
-
-    // const handleGiaVeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //   setGiaVeLe(e.target.value);
-    // };
     const handleGiaComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setGiaVeCombo1(e.target.value);
     };
     const handleSoVeComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSovecombo(e.target.value);
     };
-    // const displaySoveCombo = giacombo !== "" && sovecombo !== "" ? ` / ${sovecombo} Vé` : "";
-
     const handleSave = async () => {
       try {
       const giaCombo1ToSave = isSelected ? giacombo : null;
@@ -106,11 +100,61 @@ function Goidichvu() {
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = Math.min(startIndex + itemsPerPage, data.length);
       const currentData = data.slice(startIndex, endIndex);
+
+      const [isSelected1, setSelected1] = useState(false);
+      const [isSelected2, setSelected2] = useState(false);
+        const [isFirstLoad, setFirstLoad] = useState(true);
+    
+        useEffect(() => {
+          if (isFirstLoad) {
+            setSelected1(true); 
+            setFirstLoad(false); 
+          }
+        }, [isFirstLoad]);
+        const handleButtonClick1 = () => {
+          setSelected1(true);
+          setSelected2(false);
+        };
+      
+        const handleButtonClick2 = () => {
+          setSelected1(false);
+          setSelected2(true);
+        };
     return (
     <div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div className='bang4' id='bang4'>
           <h1 className='danhsachgoive'>Danh sách gói vé</h1>
+          <div className='textButton'>
+            <button 
+              style={{
+                marginRight: '58px',
+                border: '0',
+                background: 'white',
+                color: isSelected1 ? '#FF993C' : 'black', 
+                borderBottom: isSelected1 ? '4px solid #FF993C' : '4px solid transparent',
+                cursor: 'pointer',
+                transition: 'color 0.3s, border-bottom 0.3s',
+              }}
+              onClick={handleButtonClick1} 
+            >
+              Gói vé gia đình
+            </button>
+            <button 
+              style={{
+                marginRight: '58px',
+                border: '0',
+                background: 'white',
+                color: isSelected2 ? '#FF993C' : 'black', 
+                borderBottom: isSelected2 ? '4px solid #FF993C' : '4px solid transparent',
+                cursor: 'pointer',
+                transition: 'color 0.3s, border-bottom 0.3s',
+              }}
+              onClick={handleButtonClick2}
+            >
+              Gói vé sự kiện
+            </button>
+            </div>
         <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
           <div className='searchve'>
             <div className='timkiemsove col-auto col-sm-8'>
@@ -181,13 +225,18 @@ function Goidichvu() {
                   <>
                     <Input placeholder="Giá vé"  style={{width: '25%', background: '#F1F4F8'}} 
                      value={giacombo} onChange={handleGiaComboChange} />
-                     <p style={{display: 'inline', marginLeft: '5px', marginRight: '10px', fontWeight: 'normal'}}>/</p> 
+                     <p style={{display: 'inline', 
+                      marginLeft: '5px', 
+                      marginRight: '10px', 
+                      fontWeight: 'normal'}}>/</p> 
                     <Input placeholder="Số vé"  style={{width: '25%', background: '#F1F4F8'}} 
                      value={sovecombo} onChange={handleSoVeComboChange} />
-                      <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
-                  </>
-                 </div>
-                </div>
+                      <p style={{display: 'inline', 
+                        marginLeft: '5px', 
+                        fontWeight: 'normal'}}>/ vé</p>
+                      </>
+                  </div>
+                  </div>
                 <div className='congcheckin'>
                     <p>Tình trạng</p>
                     <Select
@@ -205,8 +254,11 @@ function Goidichvu() {
                         },
                       ]}
                     />
-                    <p style={{fontFamily: 'Montserrat',fontSize: '12px',fontStyle: 'italic',fontWeight: '400',
-                    lineHeight: 'normal'}}>* là thông tin bắt buộc</p>
+                <p style={{fontFamily: 'Montserrat',
+                  fontSize: '12px',
+                  fontStyle: 'italic',
+                  fontWeight: '400',
+                  lineHeight: 'normal'}}>* là thông tin bắt buộc</p>
                  </div>
                  <Space wrap style={{ marginTop: '22px', marginLeft: '70px'}}>
                   <Button danger onClick={() => setModal2Open(false)} style={{ width: '160px', 
@@ -268,9 +320,10 @@ function Goidichvu() {
                       <td style={tdstyle}>{item.nhethan}</td>
                       <td style={tdstyle}>{item.giave}</td>
                       <td style={tdstyle}>
-                      {item.giacombo && item.sovecombo ? `${item.giacombo} / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
+          {item.giacombo && item.sovecombo ? `${item.giacombo} / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
                       </td>
-                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
+                      <td style={tdstyle}><span style={tinhtrangStyle}>
+                      <i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
                       <td style={tdstyle} onClick={() => setModal1Open(true)}><FormOutlined /> Cập nhật</td>
                     </tr>
                   )
@@ -309,7 +362,7 @@ function Goidichvu() {
                 </Space>
                 <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
                 <Space direction="vertical" style={{ marginLeft: '10px', marginRight: '10px' }}>
-                    <DatePicker onChange={onChange} />
+                <DatePicker onChange={onChange} />
                 </Space>
                 <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
                 </div>

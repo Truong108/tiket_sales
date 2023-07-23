@@ -83,11 +83,65 @@ interface datafirebase {
     fillSoatve = data.filter((item) => {
       return typeof item.sove === 'string' && item.sove.includes(locve);
     });
+
+    const [isSelected1, setSelected1] = useState(false);
+    const [isSelected2, setSelected2] = useState(false);
+    const [isFirstLoad, setFirstLoad] = useState(true);
+
+    useEffect(() => {
+      if (isFirstLoad) {
+        setSelected1(true); 
+        setFirstLoad(false); 
+      }
+    }, [isFirstLoad]);
+    const handleButtonClick1 = () => {
+      setSelected1(true);
+      setSelected2(false);
+    };
+  
+    const handleButtonClick2 = () => {
+      setSelected1(false);
+      setSelected2(true);
+    };
+
   return (
     <div className='ct'> 
         <div className='doisoatve'>
           <div className='bang2' id='bang2'>
             <h1 className='danhsachve'>Đối Soát Vé</h1>
+            <div className='doisoatve'>
+            <div className='textButton'>
+            <button 
+              style={{
+                marginRight: '58px',
+                border: '0',
+                background: 'white',
+                color: isSelected1 ? '#FF993C' : 'black', 
+                borderBottom: isSelected1 ? '4px solid #FF993C' : '4px solid transparent',
+                cursor: 'pointer',
+                transition: 'color 0.3s, border-bottom 0.3s',
+              }}
+              onClick={handleButtonClick1} 
+            >
+              Gói vé gia đình
+            </button>
+            <button 
+              style={{
+                marginRight: '58px',
+                border: '0',
+                background: 'white',
+                color: isSelected2 ? '#FF993C' : 'black', 
+                borderBottom: isSelected2 ? '4px solid #FF993C' : '4px solid transparent',
+                cursor: 'pointer',
+                transition: 'color 0.3s, border-bottom 0.3s',
+              }}
+              onClick={handleButtonClick2}
+            >
+              Gói vé sự kiện
+            </button>
+            </div>
+            {/* {isSelected1 ? <TableVegiadinh /> : <TableVeSuKien />} */}
+            </div>
             <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
             <div className='searchve'>
               <div className='timkiemsove col-auto col-sm-8'>
