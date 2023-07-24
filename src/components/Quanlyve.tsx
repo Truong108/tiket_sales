@@ -9,7 +9,7 @@ import TableVegiadinh from './Table/TableVegiadinh';
 const Quanlyve = () => {
   const [isSelected1, setSelected1] = useState(false);
   const [isSelected2, setSelected2] = useState(false);
-    const [isFirstLoad, setFirstLoad] = useState(true);
+  const [isFirstLoad, setFirstLoad] = useState(true);
 
     useEffect(() => {
       if (isFirstLoad) {
@@ -35,7 +35,6 @@ const Quanlyve = () => {
           <div className='textButton'>
           <button 
             style={{
-              marginRight: '58px',
               border: '0',
               background: 'white',
               color: isSelected1 ? '#FF993C' : 'black', 
@@ -49,7 +48,6 @@ const Quanlyve = () => {
           </button>
           <button 
             style={{
-              marginRight: '58px',
               border: '0',
               background: 'white',
               color: isSelected2 ? '#FF993C' : 'black', 

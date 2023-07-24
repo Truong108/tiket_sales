@@ -163,36 +163,34 @@
 }
 /* Bảng Thống kê, quản lí ve */
 .bang{
-  width: 1340px;
-  height: 853px;
+  width: 1410px;
+  height: 865px;
   border-radius: 24px;
   background: #FFF;
   display: flex;
   flex-direction: column;
 }
 .bang2{
-  height: 853px;
+  width: 1200px;
+  height: 865px;
   border-radius: 24px;
   background: #FFF;
   display: flex;
   flex-direction: column;
-  flex: 3;
-  margin-right: 20px;
+  margin-right: 17px;
 }
 /* bảng đối soát ve , (lọc vé) */
 .bang3{
-  height: 853px;
+  height: 865px;
   flex-shrink: 0;
   border-radius: 24px;
   background: #FFF;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  margin-right: 20px;
 }
 .bang4{
-  width: 1340px;
-  height: 853px;
+  width: 1410px;
+  height: 865px;
   border-radius: 24px;
   background: #FFF;
   display: flex;
@@ -459,7 +457,7 @@
 }
 /* bảng lọc vé */
 .content{
-  width: 1280px;
+  width: 1350px;
   margin: 0 auto;
 }
 .tableshow th{
@@ -467,7 +465,7 @@
 }
 /* bảng soát vé */
 .contect{
-  width: 895px;
+  width: 970px;
   margin: 0 auto;
   margin-left: 30px;
 }
@@ -528,4 +526,25 @@
 }
 .textButton{
   margin-left: 28px;
+  gap: 20px;
+  display: flex;
+}
+.textButton button{
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+.textButton .active{
+  color: #FF993C;
+  border-bottom: 4px solid #FF993C;
+}
+.bi-three-dots-vertical{
+  float: right;
+}
+.more:hover .bi-three-dots-vertical{
+  visibility: visible;
+  cursor: pointer;
+}
+.bi-three-dots-vertical{
+  visibility: hidden;
 }

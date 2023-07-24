@@ -20,19 +20,16 @@ const App = () => {
         <img src={imageSrc} alt="insight"/>
         </div>
       </div>
-      <div className="col-6">
-        <div className="p-3">
-        <div className="container text-center">
+      <div className="col-6" >
+        <div className="container text-center" style={{margin: '20px', marginLeft: '-1px'}}>
           <div className="row" style={{marginLeft: '10%'}}>
             <div className="col-auto col-sm-3">
             <input className="search__input" type="text" placeholder="Search" />
             </div>
           </div>
         </div>
-        </div>
       </div>
-      <div className="col-3" style={{marginLeft: '220px'}}>
-        <div className="p-3 ">
+      <div className="col-3" style={{marginLeft: '245px', marginTop: '14px'}}>
         <div className="row justify-content-end">
             <div className="col-2" style={{fontSize: '27px'}}>
             <MailOutlined />
@@ -44,7 +41,6 @@ const App = () => {
             <img className='meImg' src={meIcon} alt="Search Icon"  />
             </div>
           </div>
-        </div>
       </div>
      <Menu />
        <div className="col-10">

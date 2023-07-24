@@ -4,6 +4,7 @@ import { Button, Checkbox, Col, DatePicker, DatePickerProps, Modal, Pagination, 
 import '../../css/styles.css';
 import { useEffect, useState } from 'react';
 import { CheckboxValueType } from 'antd/es/checkbox/Group';
+// import ModalQuanlive from '../Modal/ModalQuanlive';
 
     interface DataFirebase {
         id: string;
@@ -100,7 +101,8 @@ const TableVegiadinh = () => {
     };
     const handlevaluesove = (e: React.ChangeEvent<HTMLInputElement>) =>{
       setLocve(e.target.value)
-  }
+    }
+
     return ( <>
       <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
             <div className='searchve'>
@@ -112,7 +114,7 @@ const TableVegiadinh = () => {
               <Space wrap style={{ marginRight: '30px' }}>
                 <Button danger onClick={() => setModal2Open(true)} style={{ width: '127px', height: '42px'}}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{marginBottom: '5px'}}>
-                  <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="#FF993C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="#FF993C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <p style={{display: 'inline', 
                 marginLeft: '10px', 
@@ -203,6 +205,7 @@ const TableVegiadinh = () => {
                   <th style={{background:"#F1F4F8"}}>Ngày sử dụng</th>
                   <th style={{background:"#F1F4F8"}}>Ngày xuất vé</th>
                   <th style={{background:"#F1F4F8"}}>Cổng check-in</th>
+                  <th style={{background:"#F1F4F8"}}></th>
                 </tr>
               </thead>
               <tbody>
@@ -234,7 +237,7 @@ const TableVegiadinh = () => {
                     borderRadius:"8px"}
                    }
                   return (
-                    <tr key={item.stt}>
+                    <tr className='more' key={item.stt}>
                       <td style={tdstyle}>{startIndex + index + 1}</td>
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
@@ -242,6 +245,7 @@ const TableVegiadinh = () => {
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"></i></td>
                     </tr>
                   );
                 }) : currentData.map((item, index) => {
@@ -251,16 +255,28 @@ const TableVegiadinh = () => {
                   }
                   let tinhtrangStyle = {}
                   if(item.tinhtrang ==="Đã sử dụng"){
-                      tinhtrangStyle ={color:"#919DBA", backgroundColor:"#EAF1F8", border:"1px solid #919DBA", padding:"5px 10px", borderRadius:"8px"}
+                      tinhtrangStyle ={color:"#919DBA", 
+                      backgroundColor:"#EAF1F8", 
+                      border:"1px solid #919DBA", 
+                      padding:"5px 10px", 
+                      borderRadius:"8px"}
                   }
                    if(item.tinhtrang ==="Chưa sử dụng"){
-                    tinhtrangStyle={color:"#03AC00", backgroundColor:"#EAF1F8" , border:"1px solid #03AC00", padding:"5px 10px", borderRadius:"8px"}
+                    tinhtrangStyle={color:"#03AC00", 
+                    backgroundColor:"#EAF1F8" , 
+                    border:"1px solid #03AC00", 
+                    padding:"5px 10px", 
+                    borderRadius:"8px"}
                    }
                    if(item.tinhtrang ==="Hết hạn"){
-                    tinhtrangStyle={color:"#FD5959", backgroundColor:"#F8EBE8" , border:"1px solid #FD5959", padding:"5px 10px", borderRadius:"8px"}
+                    tinhtrangStyle={color:"#FD5959", 
+                    backgroundColor:"#F8EBE8" , 
+                    border:"1px solid #FD5959", 
+                    padding:"5px 10px", 
+                    borderRadius:"8px"}
                    }
                   return (
-                    <tr key={item.stt}>
+                    <tr className='more' key={item.stt}>
                       <td style={tdstyle}>{startIndex + index + 1}</td>
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
@@ -268,6 +284,7 @@ const TableVegiadinh = () => {
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"></i></td>
                     </tr>
                   );
                 })}
