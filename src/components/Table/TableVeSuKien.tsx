@@ -1,9 +1,19 @@
 import { collection, getDocs } from 'firebase/firestore';
 import api from '../../firebase/firebaseAPI';
-import { Button, Checkbox, Col, DatePicker, DatePickerProps, Modal, Pagination, Radio, RadioChangeEvent, Row, Space } from 'antd';
+import { Button, 
+  Checkbox, 
+  Col, 
+  DatePicker, 
+  DatePickerProps, 
+  Modal, Pagination, 
+  Radio, 
+  RadioChangeEvent, 
+  Row, 
+  Space } from 'antd';
 import '../../css/styles.css';
 import { useEffect, useState } from 'react';
 import { CheckboxValueType } from 'antd/es/checkbox/Group';
+import ModalQuanlive from '../Modal/ModalQuanlive';
 
     interface DataFirebase {
         id: string;
@@ -16,7 +26,15 @@ import { CheckboxValueType } from 'antd/es/checkbox/Group';
         sove: string;
         congcheck: string;
     }
-const TableVeSuKien = () => {
+const TableVeSuKien: React.FC = () => {
+  const [ngaysudung, setNgaysudung] = useState<string>("")
+  const [idsudung, setIdngaysudung] = useState<string>("")
+  const [isModalOpen, setModalOpen] = useState(false);
+  const handleOpenModal = (ngaysudung:string, idsudung:string) => {
+    setModalOpen(true);
+    setNgaysudung(ngaysudung);
+    setIdngaysudung(idsudung);
+  };
     const [data, setData] = useState<DataFirebase[]>([]);
     const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
     const [modal2Open, setModal2Open] = useState(false);
@@ -205,6 +223,7 @@ const TableVeSuKien = () => {
                   <th style={{background:"#F1F4F8"}}>Ngày sử dụng</th>
                   <th style={{background:"#F1F4F8"}}>Ngày xuất vé</th>
                   <th style={{background:"#F1F4F8"}}>Cổng check-in</th>
+                  <th style={{background:"#F1F4F8"}}></th>
                 </tr>
               </thead>
               <tbody>
@@ -236,7 +255,7 @@ const TableVeSuKien = () => {
                     borderRadius:"8px"}
                    }
                   return (
-                    <tr key={item.stt}>
+                    <tr className='more' key={item.stt}>
                       <td style={tdstyle}>{startIndex + index + 1}</td>
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
@@ -245,6 +264,7 @@ const TableVeSuKien = () => {
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"  onClick={() => handleOpenModal(item.ngaysudung, item.id)}></i></td>
                     </tr>
                   );
                 }) : currentData.map((item, index) => {
@@ -263,7 +283,7 @@ const TableVeSuKien = () => {
                     tinhtrangStyle={color:"#FD5959", backgroundColor:"#F8EBE8" , border:"1px solid #FD5959", padding:"5px 10px", borderRadius:"8px"}
                    }
                   return (
-                    <tr key={item.stt}>
+                    <tr className='more' key={item.stt}>
                       <td style={tdstyle}>{startIndex + index + 1}</td>
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
@@ -272,6 +292,7 @@ const TableVeSuKien = () => {
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"  onClick={() =>handleOpenModal(item.ngaysudung, item.id)}></i></td>
                     </tr>
                   );
                 })}
@@ -287,6 +308,7 @@ const TableVeSuKien = () => {
               />
             </div>
           </div>
+          <ModalQuanlive idsudung={idsudung} valuengaysudung={ngaysudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </> );
 }
  

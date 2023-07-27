@@ -14,7 +14,7 @@ interface datafirebase {
     congcheckin: string;
     doisoat: string;
   }
-const BangdoisoatSukien = () => {
+const BangdoisoatSukien: React.FC = () => {
     const [filteredData, setFilteredData] = useState<datafirebase[]>([]);
     const [data, setData] = useState<datafirebase[]>([]);
     useEffect(() => {

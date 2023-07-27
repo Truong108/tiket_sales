@@ -9,7 +9,7 @@ import Doisoatve from './components/Doisoatve';
 import Goidichvu from './components/Goidichvu';
 import { BellOutlined, MailOutlined } from '@ant-design/icons';
 import Menu from './components/Menu/menu-tab';
-
+import Footer from './components/Footer/footer';
 
 const App = () => {
   return (
@@ -47,16 +47,12 @@ const App = () => {
         <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/quan-li-ve' element={<Quanlyve/>}/>
-        <Route path='/doi-soat-ve' element={<Doisoatve/>}/>
+        <Route path="/doi-soat-ve" element={<Doisoatve/>} />
         <Route path='/goi-dich-vu' element={<Goidichvu/>}/>
         </Routes>
         </div>
-    </div>
-    <div className="footer">
-            <p className='ft1'>Copyright</p>
-            <p className='ft2'>©</p>
-            <p className='ft3'>2020 Alta Software</p>
-      </div>
+       </div>
+    <Footer/>
   </div>
   );
 };

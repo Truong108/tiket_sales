@@ -1,22 +1,53 @@
 import { collection, getDocs } from 'firebase/firestore';
 import api from '../../firebase/firebaseAPI';
-import { Button, Checkbox, Col, DatePicker, DatePickerProps, Modal, Pagination, Radio, RadioChangeEvent, Row, Space } from 'antd';
+import { Button, 
+  Checkbox, 
+  Col, 
+  DatePicker, 
+  DatePickerProps,
+  Modal, 
+  Pagination, 
+  Radio, 
+  RadioChangeEvent, 
+  Row, 
+  Space } from 'antd';
 import '../../css/styles.css';
 import { useEffect, useState } from 'react';
 import { CheckboxValueType } from 'antd/es/checkbox/Group';
-// import ModalQuanlive from '../Modal/ModalQuanlive';
-
-    interface DataFirebase {
-        id: string;
-        stt: number;
-        bookingcode: string;
-        tinhtrang: string;
-        ngaysudung: string;
-        ngayxuatve: string;
-        sove: string;
-        congcheck: string;
-    }
-const TableVegiadinh = () => {
+import ModalQuanlive from '../Modal/ModalQuanlive';
+  interface DataFirebase {
+    id: string;
+    stt: number;
+    bookingcode: string;
+    tinhtrang: string;
+    ngaysudung: string;
+    ngayxuatve: string;
+    sove: string;
+    congcheck: string;
+  }
+    const TableVegiadinh: React.FC = () => {
+      const [ngaysudung, setNgaysudung] = useState<string>("");
+      const [isModalOpen, setModalOpen] = useState(false);
+      const [idsudung, setIdngaysudung] = useState<string>("");
+      const fetchData = async () => {
+        const querySnapshot = await getDocs(collection(api, "ticket"));
+        const fetchedData: DataFirebase[] = [];
+        querySnapshot.forEach((doc) => {
+          fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
+        });
+        setData(fetchedData);
+        setFilteredData(fetchedData);
+      };
+      useEffect(() => {
+        fetchData();
+      }, [ngaysudung]);
+      const handleOpenModal = (ngaysudungValue: string, idngaysudung: string) => {
+        setModalOpen(true);
+        setNgaysudung(ngaysudungValue);
+        setIdngaysudung(idngaysudung);
+        fetchData();
+      };
+      
     const [data, setData] = useState<DataFirebase[]>([]);
     const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
     const [modal2Open, setModal2Open] = useState(false);
@@ -26,18 +57,6 @@ const TableVegiadinh = () => {
     const [selectedCheckIn, setSelectedCheckIn] = useState<CheckboxValueType[]>([]);
     const [selectAllCheckIn, setSelectAllCheckIn] = useState(false);
     const [locve, setLocve] = useState<string>("")
-    useEffect(() => {
-        const fetchData = async () => {
-        const querySnapshot = await getDocs(collection(api, "ticket"));
-        const fetchedData: DataFirebase[] = [];
-        querySnapshot.forEach((doc) => {
-            fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
-        });
-        setData(fetchedData);
-        setFilteredData(fetchedData);
-        };
-        fetchData();
-    }, []);
     let fillLocve: DataFirebase[];
     fillLocve = data.filter((item) => {
       return typeof item.sove === 'string' && item.sove.includes(locve);
@@ -47,7 +66,7 @@ const TableVegiadinh = () => {
     const handlePageChange = (page: number) => {
       setCurrentPage(page);
     };
-    const startIndex = (currentPage - 1) * itemsPerPage;
+    const startIndex = (currentPage - 1) * itemsPerPage;  
     const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
     const currentData = filteredData.slice(startIndex, endIndex);
     const handleFilterTickets = () => {
@@ -245,7 +264,7 @@ const TableVegiadinh = () => {
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
-                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"></i></td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"  onClick={() => handleOpenModal(item.ngaysudung, item.id)}></i></td>
                     </tr>
                   );
                 }) : currentData.map((item, index) => {
@@ -284,7 +303,7 @@ const TableVegiadinh = () => {
                       <td style={tdstyle}>{item.ngaysudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
-                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"></i></td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical" onClick={() => handleOpenModal(item.ngaysudung, item.id)}></i></td>
                     </tr>
                   );
                 })}
@@ -300,6 +319,7 @@ const TableVegiadinh = () => {
               />
             </div>
           </div>
+          <ModalQuanlive idsudung={idsudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} valuengaysudung={ngaysudung}/>
     </> );
 }
  

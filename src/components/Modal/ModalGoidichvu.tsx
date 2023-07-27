@@ -17,65 +17,75 @@ interface datafirebase {
     tengoive: string;
     napdung: string;
     nhethan: string;
+    gio: string;
     giave: number;
     giacombo: number;
-    sovecombo: string;
+    sovecombo: number;
     tinhtrang: string;
     capnhat: string;
 }
 const ModalGoidichvu = () => {
+    const doigiatri = (value: number | string): string => {
+      return value.toLocaleString("vi-VN");
+    };
     const [modal1Open, setModal1Open] = useState(false);
     const [modal2Open, setModal2Open] = useState(false);
     const [data, setData] = useState<datafirebase[]>([]);
     const [tengoive, setTenGoiVe] = useState('');
-    const [napdung, setNgayApDung] = useState<Date | null>(null);
-    const [nhethan, setNgayHetHan] = useState<Date | null>(null);
-    const [giave, setGiaVeLe] = useState<string >();
-    const [giacombo, setGiaVeCombo1] = useState<string>();
-    const [sovecombo, setSovecombo] = useState<string>();
+    const [napdung, setNgayApDung] = useState('');
+    const [nhethan, setNgayHetHan] = useState('');
+    const [giave, setGiaVeLe] = useState<number | null>(null);
+    const [giacombo, setGiaVeCombo] = useState<number | null>(null);
+    const [sovecombo, setSoveCombo] = useState<number | null>(null)   
     const [tinhtrang, setTinhTrang] = useState<string>('Đang áp dụng');
     const [isSelected, setIsSelected] = useState(false);
-    const doigiatri = (value : number | string) :string =>{
-          return value.toLocaleString("vi-VN")
-    }
-    useEffect(() => {
-        const fetchData = async () => {
-          const querySnapshot = await getDocs(collection(api, "goive"));
-          const fetchedData: datafirebase[] = [];
-          querySnapshot.forEach((doc) => {
-            fetchedData.push({ id: doc.id, ...doc.data() } as datafirebase);
-          });
-          setData(fetchedData);
-        };
-        fetchData();
-      }, []);
+   
+    const handlGiaveleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const giave = parseFloat(e.target.value);
+      setGiaVeLe(giave);
+    };
+
     const handleGiaComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setGiaVeCombo1(e.target.value);
+      const giacombo = parseFloat(e.target.value);
+      setGiaVeCombo(giacombo);
     };
+    
     const handleSoVeComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSovecombo(e.target.value);
+      const sovecombo = parseFloat(e.target.value);
+      setSoveCombo(sovecombo);
     };
+    const fetchData = async () => {
+      const querySnapshot = await getDocs(collection(api, "goive"));
+      const fetchedData: datafirebase[] = [];
+      querySnapshot.forEach((doc) => {
+        fetchedData.push({ id: doc.id, ...doc.data() } as datafirebase);
+      });
+      setData(fetchedData);
+    };
+    fetchData();
+      useEffect(()=>{
+        fetchData()
+    },[modal1Open])
+          
     const handleSave = async () => {
         try {
-        const giaCombo1ToSave = isSelected ? giacombo : null;
-        const giaCombo2ToSave = isSelected ? sovecombo : null;
           const goive = {
             tengoive,
             napdung,
             nhethan,
             giave,
-            giacombo: giaCombo1ToSave,
-            sovecombo: giaCombo2ToSave,
+            giacombo,
+            sovecombo,
             tinhtrang,
           };
           await addDoc(collection(api, "goive"), goive);
           setModal2Open(false);
           setTenGoiVe('');
-          setNgayApDung(null);
-          setNgayHetHan(null);
-          setGiaVeLe("");
-          setGiaVeCombo1("");
-          setSovecombo("");
+          setNgayApDung("");
+          setNgayHetHan("");
+          setGiaVeLe(null);
+          setGiaVeCombo(null);
+          setSoveCombo(null);
           setTinhTrang('Đang áp dụng');
         } catch (error) {
           console.error('Lỗi khi thêm gói vé:', error);
@@ -161,21 +171,38 @@ const ModalGoidichvu = () => {
                   <div>
                     <p>Giá vé áp dụng</p>
                   <Checkbox onChange={CheckboxOnChange}>Vé lẻ (vnđ/vé) với giá</Checkbox>
-                  <Input placeholder="Giá vé" style={{width: '35%', background: '#F1F4F8'}} 
-                  onChange={(e) => setGiaVeLe(e.target.value)}/> 
+                  <Input
+                    placeholder="Giá vé"
+                    style={{ width: '35%', background: '#F1F4F8' }}
+                    value={giave ?? ''}
+                    onChange={handlGiaveleChange}
+                    type="number"
+
+                  />
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>
                   </div>
                  <div style={{marginTop: '10px'}}>
                  <Checkbox onChange={() => setIsSelected(!isSelected)}>Combo vé với giá</Checkbox>
                   <>
-                    <Input placeholder="Giá vé"  style={{width: '25%', background: '#F1F4F8'}} 
-                     value={giacombo} onChange={handleGiaComboChange} />
+                  <Input
+                      placeholder="Giá vé"
+                      style={{ width: '35%', background: '#F1F4F8' }}
+                      value={giacombo ?? ''}
+                      onChange={handleGiaComboChange}
+                      type="number"
+
+                    />
                      <p style={{display: 'inline', 
-                      marginLeft: '5px', 
+                      marginLeft: '8px', 
                       marginRight: '10px', 
                       fontWeight: 'normal'}}>/</p> 
-                    <Input placeholder="Số vé"  style={{width: '25%', background: '#F1F4F8'}} 
-                     value={sovecombo} onChange={handleSoVeComboChange} />
+                   <Input
+                      placeholder="Giá vé"
+                      style={{ width: '20%', background: '#F1F4F8' }}
+                      value={sovecombo ?? ''}
+                      onChange={handleSoVeComboChange}
+                      type="number"
+                    />
                       <p style={{display: 'inline', 
                         marginLeft: '5px', 
                         fontWeight: 'normal'}}>/ vé</p>
@@ -261,11 +288,11 @@ const ModalGoidichvu = () => {
                       <td style={tdstyle}>{index + 1}</td>
                       <td style={tdstyle}>{item.magoi}</td>
                       <td style={tdstyle}>{item.tengoive}</td>
-                      <td style={tdstyle}>{item.napdung}</td>
-                      <td style={tdstyle}>{item.nhethan}</td>
+                      <td style={tdstyle}>{item.napdung} <br/> {item.gio}</td>
+                      <td style={tdstyle}>{item.nhethan} <br/> {item.gio}</td>
                       <td style={tdstyle}>{doigiatri(item.giave)} VNĐ</td>
                       <td style={tdstyle}>
-            {item.giacombo && item.sovecombo ? `${item.giacombo} VNĐ / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
+      {item.giacombo && item.sovecombo ? `${doigiatri(item.giacombo)} VNĐ / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
                       </td>
                       <td style={tdstyle}><span style={tinhtrangStyle}>
                       <i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
@@ -324,7 +351,7 @@ const ModalGoidichvu = () => {
                   <Checkbox onChange={CheckboxOnChange}>Combo vé với giá</Checkbox>
                   <Input placeholder="Giá vé" style={{width: '25%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', 
-                  marginLeft: '5px', marginRight: '10px', 
+                  marginLeft: '8px', marginRight: '10px', 
                   fontWeight: 'normal'}}>/</p> 
                   <Input placeholder="Giá vé" style={{width: '20%', background: '#F1F4F8'}}/> 
                   <p style={{display: 'inline', marginLeft: '5px', fontWeight: 'normal'}}>/ vé</p>

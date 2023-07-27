@@ -1,0 +1,7 @@
+.a, .b, .c, .d{
+    margin-top: 10px;
+    display: flex;
+}
+.a{
+    margin-top: 30px;
+}
