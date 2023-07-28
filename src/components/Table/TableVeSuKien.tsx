@@ -44,18 +44,18 @@ const TableVeSuKien: React.FC = () => {
     const [selectedCheckIn, setSelectedCheckIn] = useState<CheckboxValueType[]>([]);
     const [selectAllCheckIn, setSelectAllCheckIn] = useState(false);
     const [locve, setLocve] = useState<string>("")
+    const fetchData = async () => {
+      const querySnapshot = await getDocs(collection(api, "ticket"));
+      const fetchedData: DataFirebase[] = [];
+      querySnapshot.forEach((doc) => {
+        fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
+      });
+      setData(fetchedData);
+      setFilteredData(fetchedData);
+    };
     useEffect(() => {
-        const fetchData = async () => {
-        const querySnapshot = await getDocs(collection(api, "ticket"));
-        const fetchedData: DataFirebase[] = [];
-        querySnapshot.forEach((doc) => {
-            fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
-        });
-        setData(fetchedData);
-        setFilteredData(fetchedData);
-        };
-        fetchData();
-    }, []);
+      fetchData();
+    }, [isModalOpen]);
     let fillLocve: DataFirebase[];
     fillLocve = data.filter((item) => {
       return typeof item.sove === 'string' && item.sove.includes(locve);

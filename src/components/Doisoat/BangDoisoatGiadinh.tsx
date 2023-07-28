@@ -14,7 +14,12 @@ interface datafirebase {
     congcheckin: string;
     doisoat: string;
   }
-const BangDoisoatve = () => {
+  interface TableDoisoat {
+    onfillter: string;
+    tungay: string | null;
+    denngay: string | null;
+  }
+const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, tungay, denngay}) => {
     const [filteredData, setFilteredData] = useState<datafirebase[]>([]);
     const [data, setData] = useState<datafirebase[]>([]);
     useEffect(() => {
@@ -44,7 +49,30 @@ const BangDoisoatve = () => {
     };
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-    const currentData = filteredData.slice(startIndex, endIndex);
+
+    const currentRows = data.filter((item) => {
+      const isDoisoatMatch = onfillter === "Tất cả" || item.doisoat === onfillter;
+      if (!tungay && !denngay) {
+        return isDoisoatMatch;
+      }
+      if (tungay && denngay) {
+        const fromDay = Number(tungay.split("/")[0]);
+        const fromMonth = Number(tungay.split("/")[1]) - 1;
+        const fromYear = Number(tungay.split("/")[2]);
+        const toDay = Number(denngay.split("/")[0]);
+        const toMonth = Number(denngay.split("/")[1]) - 1;
+        const toYear = Number(denngay.split("/")[2]);
+        const fromDate = new Date(fromYear, fromMonth, fromDay);
+        const toDate = new Date(toYear, toMonth, toDay);
+        const ngaySuDungDay = Number(item.ngaysudung.split("/")[0]);
+        const ngaySuDungMonth = Number(item.ngaysudung.split("/")[1]) - 1;
+        const ngaySuDungYear = Number(item.ngaysudung.split("/")[2]);
+        const ngaysudung = new Date(ngaySuDungYear, ngaySuDungMonth, ngaySuDungDay);
+        const isDateInRange = ngaysudung >= fromDate && ngaysudung <= toDate;
+        return isDoisoatMatch && isDateInRange;
+      }
+      return isDoisoatMatch;
+    }).slice(startIndex, endIndex);    
     return ( <>
         <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
             <div className='searchve'>
@@ -99,7 +127,7 @@ const BangDoisoatve = () => {
                       <td style={tdstyle}><span style={doisoatStyle}>{item.doisoat}</span></td>
                     </tr>
                   );
-                }) : currentData.map((item, index) => {
+                }) : currentRows.map((item, index) => {
                   let tdstyle = {};
                   if (index % 2 === 1) {
                     tdstyle = { backgroundColor: "#F7F8FB" };

@@ -1,4 +1,4 @@
-import { Button, Checkbox, DatePicker, DatePickerProps, Input, Modal, Pagination, Select, Space, TimePicker } from "antd";
+import { Button, Checkbox, Input, Modal, Pagination, Select, Space } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import api from "../../firebase/firebaseAPI";
@@ -8,8 +8,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { FormOutlined } from "@ant-design/icons";
+import { CalendarDateValue, CalendarTime } from "../Calendar/CalendarDoisoat";
 dayjs.extend(customParseFormat)
-
 interface datafirebase {
     id: string;
     stt: number;
@@ -17,7 +17,7 @@ interface datafirebase {
     tengoive: string;
     napdung: string;
     nhethan: string;
-    gio: string;
+    tgapdung: string;
     giave: number;
     giacombo: number;
     sovecombo: number;
@@ -25,35 +25,40 @@ interface datafirebase {
     capnhat: string;
 }
 const ModalGoidichvu = () => {
-    const doigiatri = (value: number | string): string => {
-      return value.toLocaleString("vi-VN");
-    };
+  const doigiatri = (value: number | string): string => {
+    if (value == null) {
+      return ""; 
+    }
+    return value.toLocaleString("vi-VN");
+  };
     const [modal1Open, setModal1Open] = useState(false);
     const [modal2Open, setModal2Open] = useState(false);
     const [data, setData] = useState<datafirebase[]>([]);
     const [tengoive, setTenGoiVe] = useState('');
-    const [napdung, setNgayApDung] = useState('');
-    const [nhethan, setNgayHetHan] = useState('');
-    const [giave, setGiaVeLe] = useState<number | null>(null);
-    const [giacombo, setGiaVeCombo] = useState<number | null>(null);
-    const [sovecombo, setSoveCombo] = useState<number | null>(null)   
+    const [napdung, setNgayApDung] = useState<string | null>(null);
+    const [nhethan, setNgayHetHan] = useState<string | null>(null);
+    const [tgapdung, setTgApdung] = useState<string | null>(null);
+    const [tghethan, setTgHethan] = useState<string | null>(null);
+    const [giave, setGiaVeLe] = useState<number | string>("");
+    const [giacombo, setGiaVeCombo] = useState<number | string>("");
+    const [sovecombo, setSoveCombo] = useState<number | string>("");  
     const [tinhtrang, setTinhTrang] = useState<string>('Đang áp dụng');
     const [isSelected, setIsSelected] = useState(false);
-   
     const handlGiaveleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const giave = parseFloat(e.target.value);
       setGiaVeLe(giave);
     };
-
     const handleGiaComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const giacombo = parseFloat(e.target.value);
       setGiaVeCombo(giacombo);
     };
-    
     const handleSoVeComboChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const sovecombo = parseFloat(e.target.value);
       setSoveCombo(sovecombo);
     };
+    const giaVeLeFormatted = doigiatri(giave);
+    const giaVeComboFormatted = doigiatri(giacombo);
+    const soveComboFormatted = doigiatri(sovecombo);
     const fetchData = async () => {
       const querySnapshot = await getDocs(collection(api, "goive"));
       const fetchedData: datafirebase[] = [];
@@ -63,16 +68,23 @@ const ModalGoidichvu = () => {
       setData(fetchedData);
     };
     fetchData();
-      useEffect(()=>{
+    useEffect(()=>{
         fetchData()
     },[modal1Open])
-          
     const handleSave = async () => {
         try {
+          const formattedNgayApDung = napdung
+          ? dayjs(napdung).format("MM/DD/YYYY")
+          : "";
+        const formattedNgayHetHan = nhethan
+          ? dayjs(nhethan).format("MM/DD/YYYY")
+          : "";
           const goive = {
             tengoive,
-            napdung,
-            nhethan,
+            napdung: formattedNgayApDung,
+            nhethan: formattedNgayHetHan,
+            tgapdung,
+            tghethan,
             giave,
             giacombo,
             sovecombo,
@@ -83,9 +95,9 @@ const ModalGoidichvu = () => {
           setTenGoiVe('');
           setNgayApDung("");
           setNgayHetHan("");
-          setGiaVeLe(null);
-          setGiaVeCombo(null);
-          setSoveCombo(null);
+          setGiaVeLe("");
+          setGiaVeCombo("");
+          setSoveCombo("");
           setTinhTrang('Đang áp dụng');
         } catch (error) {
           console.error('Lỗi khi thêm gói vé:', error);
@@ -94,9 +106,7 @@ const ModalGoidichvu = () => {
     const CheckboxOnChange = (e: CheckboxChangeEvent) => {
         console.log(`checked = ${e.target.checked}`);
       };
-    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-        console.log(date, dateString);
-      };
+  
     const handleChange = (value: string) => {
         console.log(`selected ${value}`);
         setTinhTrang(value);
@@ -156,14 +166,14 @@ const ModalGoidichvu = () => {
                 </div>
                 <div style={{ display: 'flex' }}>
                 <Space direction="vertical" style={{marginRight: '10px'}}>
-                <DatePicker onChange={onChange} />
+                <CalendarDateValue onDateChange={setNgayApDung} />
                 </Space>
-                <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
+                <CalendarTime onTimechane={setTgApdung} />
                 <Space direction="vertical" style={{ marginLeft: '10px', 
                 marginRight: '10px' }}>
-                <DatePicker onChange={onChange} />
+                 <CalendarDateValue onDateChange={setNgayHetHan} />
                 </Space>
-                <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
+                <CalendarTime onTimechane={setTgHethan} />
                 </div>
                 </div>
                 </div>
@@ -174,7 +184,7 @@ const ModalGoidichvu = () => {
                   <Input
                     placeholder="Giá vé"
                     style={{ width: '35%', background: '#F1F4F8' }}
-                    value={giave ?? ''}
+                    value={giaVeLeFormatted}
                     onChange={handlGiaveleChange}
                     type="number"
 
@@ -187,7 +197,7 @@ const ModalGoidichvu = () => {
                   <Input
                       placeholder="Giá vé"
                       style={{ width: '35%', background: '#F1F4F8' }}
-                      value={giacombo ?? ''}
+                      value={giaVeComboFormatted}
                       onChange={handleGiaComboChange}
                       type="number"
 
@@ -199,7 +209,7 @@ const ModalGoidichvu = () => {
                    <Input
                       placeholder="Giá vé"
                       style={{ width: '20%', background: '#F1F4F8' }}
-                      value={sovecombo ?? ''}
+                      value={soveComboFormatted}
                       onChange={handleSoVeComboChange}
                       type="number"
                     />
@@ -288,8 +298,8 @@ const ModalGoidichvu = () => {
                       <td style={tdstyle}>{index + 1}</td>
                       <td style={tdstyle}>{item.magoi}</td>
                       <td style={tdstyle}>{item.tengoive}</td>
-                      <td style={tdstyle}>{item.napdung} <br/> {item.gio}</td>
-                      <td style={tdstyle}>{item.nhethan} <br/> {item.gio}</td>
+                      <td style={tdstyle}>{item.napdung} <br/> {item.tgapdung}</td>
+                      <td style={tdstyle}>{item.nhethan} <br/> {item.tgapdung}</td>
                       <td style={tdstyle}>{doigiatri(item.giave)} VNĐ</td>
                       <td style={tdstyle}>
       {item.giacombo && item.sovecombo ? `${doigiatri(item.giacombo)} VNĐ / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
@@ -330,13 +340,13 @@ const ModalGoidichvu = () => {
                 </div>
                 <div style={{ display: 'flex' }}>
                 <Space direction="vertical" style={{marginRight: '10px'}}>
-                <DatePicker onChange={onChange} />
+                <CalendarDateValue onDateChange={setNgayApDung} />
                 </Space>
-                <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
+                <CalendarTime onTimechane={setTgApdung} />
                 <Space direction="vertical" style={{ marginLeft: '10px', marginRight: '10px' }}>
-                <DatePicker onChange={onChange} />
+                <CalendarDateValue onDateChange={setNgayHetHan} />
                 </Space>
-                <TimePicker defaultValue={dayjs('00:00:00', 'HH:mm:ss')} />
+                <CalendarTime onTimechane={setTgHethan} />
                 </div>
                 </div>
                 </div>

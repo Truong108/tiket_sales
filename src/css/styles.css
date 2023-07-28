@@ -181,6 +181,7 @@
 }
 /* bảng đối soát ve , (lọc vé) */
 .bang3{
+  width: 395px;
   height: 865px;
   flex-shrink: 0;
   border-radius: 24px;
@@ -225,7 +226,6 @@
   flex-shrink: 0;
   font-family: Montserrat;
   font-size: 36px;
-  font-style: normal;
   font-weight: 700;
   line-height: 54px;
   margin-left: 25px;
@@ -254,7 +254,7 @@
   font-weight: 500;
   line-height: normal;
   margin-top: 22px;
-  margin-left: 160px;
+  margin-left: 140px;
 }
 .tungay{
   display: flex;

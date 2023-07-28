@@ -40,7 +40,7 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
       };
       useEffect(() => {
         fetchData();
-      }, [ngaysudung]);
+      }, [isModalOpen]);
       const handleOpenModal = (ngaysudungValue: string, idngaysudung: string) => {
         setModalOpen(true);
         setNgaysudung(ngaysudungValue);
