@@ -18,6 +18,7 @@ interface datafirebase {
     napdung: string;
     nhethan: string;
     tgapdung: string;
+    tghethan: string;
     giave: number;
     giacombo: number;
     sovecombo: number;
@@ -73,19 +74,26 @@ const ModalGoidichvu = () => {
     },[modal1Open])
     const handleSave = async () => {
         try {
-          const formattedNgayApDung = napdung
-          ? dayjs(napdung).format("MM/DD/YYYY")
-          : "";
-        const formattedNgayHetHan = nhethan
-          ? dayjs(nhethan).format("MM/DD/YYYY")
-          : "";
+          const isNapdungValid = dayjs.isDayjs(napdung);
+          const isNhethanValid = dayjs.isDayjs(nhethan);
+          
+          let formattedNgayApDung = "";
+          let formattedNgayHetHan = "";
+
+          if (isNapdungValid) {
+            formattedNgayApDung = napdung.format("MM/DD/YYYY");
+          }
+
+          if (isNhethanValid) {
+            formattedNgayHetHan = nhethan.format("MM/DD/YYYY");
+          }
           const goive = {
             tengoive,
             napdung: formattedNgayApDung,
             nhethan: formattedNgayHetHan,
             tgapdung,
             tghethan,
-            giave,
+            giave, 
             giacombo,
             sovecombo,
             tinhtrang,
@@ -95,6 +103,8 @@ const ModalGoidichvu = () => {
           setTenGoiVe('');
           setNgayApDung("");
           setNgayHetHan("");
+          setTgApdung("");
+          setTgHethan("");
           setGiaVeLe("");
           setGiaVeCombo("");
           setSoveCombo("");
@@ -168,12 +178,12 @@ const ModalGoidichvu = () => {
                 <Space direction="vertical" style={{marginRight: '10px'}}>
                 <CalendarDateValue onDateChange={setNgayApDung} />
                 </Space>
-                <CalendarTime onTimechane={setTgApdung} />
+                <CalendarTime onTimeChange={setTgApdung} />
                 <Space direction="vertical" style={{ marginLeft: '10px', 
                 marginRight: '10px' }}>
                  <CalendarDateValue onDateChange={setNgayHetHan} />
                 </Space>
-                <CalendarTime onTimechane={setTgHethan} />
+                <CalendarTime onTimeChange={setTgHethan} />
                 </div>
                 </div>
                 </div>
@@ -275,6 +285,8 @@ const ModalGoidichvu = () => {
               <tbody>
               {currentData.map((item, index) =>{
               let tdstyle = {};
+              let magoi = item.napdung.split("/");
+              let maGoi = "ALT" + magoi.join("");
               if(index%2 === 1){
                   tdstyle = {backgroundColor:"#F7F8FB"}
               }
@@ -293,13 +305,23 @@ const ModalGoidichvu = () => {
                     padding:"5px 10px", 
                     borderRadius:"8px"}
                    }
+                   const napdungDate = dayjs(item.napdung, 'DD/MM/YYYY');
+                   const tgapdungTime = dayjs(item.tgapdung, 'HH:mm:ss');
+                   const nhethanDate = dayjs(item.nhethan, 'DD/MM/YYYY');
+                   const tghethanTime = dayjs(item.tghethan, 'HH:mm:ss');
+                   const isNapdungValid = napdungDate.isValid();
+                   const isTgapdungValid = tgapdungTime.isValid();
+                   const isNhethanValid = nhethanDate.isValid();
+                   const isTghethanValid = tghethanTime.isValid();
                   return (
                     <tr key={item.stt}>
                       <td style={tdstyle}>{index + 1}</td>
-                      <td style={tdstyle}>{item.magoi}</td>
+                      <td style={tdstyle}>{maGoi}</td>
                       <td style={tdstyle}>{item.tengoive}</td>
-                      <td style={tdstyle}>{item.napdung} <br/> {item.tgapdung}</td>
-                      <td style={tdstyle}>{item.nhethan} <br/> {item.tgapdung}</td>
+                      <td style={tdstyle}> {isNapdungValid ? napdungDate.format('DD/MM/YYYY') : 'Ngày 0 hợp lệ'} 
+                      <br/>  {isTgapdungValid ? tgapdungTime.format('HH:mm:ss') : 'Thời gian 0 hợp lệ'}</td>
+                      <td style={tdstyle}>{isNhethanValid ? nhethanDate.format('DD/MM/YYYY') : 'Ngày 0 hợp lệ'} 
+                      <br/> {isTghethanValid ? tghethanTime.format('HH:mm:ss') : 'Thời gian 0 hợp lệ'}</td>
                       <td style={tdstyle}>{doigiatri(item.giave)} VNĐ</td>
                       <td style={tdstyle}>
       {item.giacombo && item.sovecombo ? `${doigiatri(item.giacombo)} VNĐ / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
@@ -342,11 +364,11 @@ const ModalGoidichvu = () => {
                 <Space direction="vertical" style={{marginRight: '10px'}}>
                 <CalendarDateValue onDateChange={setNgayApDung} />
                 </Space>
-                <CalendarTime onTimechane={setTgApdung} />
+                <CalendarTime onTimeChange={setTgApdung} />
                 <Space direction="vertical" style={{ marginLeft: '10px', marginRight: '10px' }}>
                 <CalendarDateValue onDateChange={setNgayHetHan} />
                 </Space>
-                <CalendarTime onTimechane={setTgHethan} />
+                <CalendarTime onTimeChange={setTgApdung} />
                 </div>
                 </div>
                 </div>
