@@ -1,21 +1,19 @@
 import { DatePicker, Space, TimePicker } from "antd";
 import dayjs from "dayjs";
-import React, { useState } from "react";
-import "dayjs/locale/vi";
+import { useState } from "react";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+const dateFormatList = ["DD/MM/YYYY", "MM/DD/YYYY"];
+dayjs.extend(customParseFormat);
 
 interface CalenderTimeProps {
-  onTimeChange: (time: string) => void;
+  onTimeChange: (date: string) => void;
 }
 
 export const CalendarTime: React.FC<CalenderTimeProps> = ({ onTimeChange }) => {
-  const handleTimeChange = (time: dayjs.Dayjs | null) => {
-    if (time) {
-      onTimeChange(time.format("HH:mm:ss"));
-    } else {
-      onTimeChange("");
-    }
+  const handleTimeChange = (time: any) => {
+    onTimeChange(time.format("HH:mm:ss"));
   };
-
   return (
     <Space style={{ margin: "0" }}>
       <TimePicker
@@ -31,25 +29,26 @@ export const CalendarTime: React.FC<CalenderTimeProps> = ({ onTimeChange }) => {
 interface CalendarDateProps {
   onDateChange: (date: string) => void;
 }
-
 export const CalendarDateValue: React.FC<CalendarDateProps> = ({
   onDateChange,
 }) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
 
-  const handleDateChange = (date: dayjs.Dayjs | null) => {
-    setSelectedDate(date);
-    onDateChange(date ? date.format("DD/MM/YYYY") : "");
+  const handleDateChange = (date: any) => {
+    const selectedDayjsDate = dayjs(date);
+
+    setSelectedDate(selectedDayjsDate);
+    onDateChange(selectedDayjsDate.isValid() ? selectedDayjsDate.format('DD/MM/YYYY') : '');
   };
 
   return (
     <Space direction="vertical" size={12} style={{ margin: "0" }}>
-      <DatePicker
-        value={selectedDate}
-        onChange={handleDateChange}
-        format="DD/MM/YYYY"
-        className="custom-datepicker"
-      />
+    <DatePicker
+      value={selectedDate}
+      onChange={handleDateChange}
+      format={dateFormatList}
+      className="custom-datepicker"
+    />
     </Space>
   );
 };

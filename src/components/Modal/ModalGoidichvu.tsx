@@ -36,8 +36,8 @@ const ModalGoidichvu = () => {
     const [modal2Open, setModal2Open] = useState(false);
     const [data, setData] = useState<datafirebase[]>([]);
     const [tengoive, setTenGoiVe] = useState('');
-    const [napdung, setNgayApDung] = useState<string | null>(null);
-    const [nhethan, setNgayHetHan] = useState<string | null>(null);
+    const [napdung, setNgayApDung] = useState<string>("");
+    const [nhethan, setNgayHetHan] = useState<string>("");
     const [tgapdung, setTgApdung] = useState<string | null>(null);
     const [tghethan, setTgHethan] = useState<string | null>(null);
     const [giave, setGiaVeLe] = useState<number | string>("");
@@ -74,23 +74,10 @@ const ModalGoidichvu = () => {
     },[modal1Open])
     const handleSave = async () => {
         try {
-          const isNapdungValid = dayjs.isDayjs(napdung);
-          const isNhethanValid = dayjs.isDayjs(nhethan);
-          
-          let formattedNgayApDung = "";
-          let formattedNgayHetHan = "";
-
-          if (isNapdungValid) {
-            formattedNgayApDung = napdung.format("MM/DD/YYYY");
-          }
-
-          if (isNhethanValid) {
-            formattedNgayHetHan = nhethan.format("MM/DD/YYYY");
-          }
           const goive = {
             tengoive,
-            napdung: formattedNgayApDung,
-            nhethan: formattedNgayHetHan,
+            napdung,
+            nhethan,
             tgapdung,
             tghethan,
             giave, 
@@ -100,15 +87,15 @@ const ModalGoidichvu = () => {
           };
           await addDoc(collection(api, "goive"), goive);
           setModal2Open(false);
-          setTenGoiVe('');
-          setNgayApDung("");
-          setNgayHetHan("");
-          setTgApdung("");
-          setTgHethan("");
-          setGiaVeLe("");
-          setGiaVeCombo("");
-          setSoveCombo("");
-          setTinhTrang('Đang áp dụng');
+          setTenGoiVe(tengoive);
+          setNgayApDung(napdung);
+          setNgayHetHan(nhethan);
+          setTgApdung(tgapdung);
+          setTgHethan(tghethan);
+          setGiaVeLe(giave);
+          setGiaVeCombo(giacombo);
+          setSoveCombo(sovecombo);
+          setTinhTrang(tinhtrang);
         } catch (error) {
           console.error('Lỗi khi thêm gói vé:', error);
         }
@@ -305,23 +292,13 @@ const ModalGoidichvu = () => {
                     padding:"5px 10px", 
                     borderRadius:"8px"}
                    }
-                   const napdungDate = dayjs(item.napdung, 'DD/MM/YYYY');
-                   const tgapdungTime = dayjs(item.tgapdung, 'HH:mm:ss');
-                   const nhethanDate = dayjs(item.nhethan, 'DD/MM/YYYY');
-                   const tghethanTime = dayjs(item.tghethan, 'HH:mm:ss');
-                   const isNapdungValid = napdungDate.isValid();
-                   const isTgapdungValid = tgapdungTime.isValid();
-                   const isNhethanValid = nhethanDate.isValid();
-                   const isTghethanValid = tghethanTime.isValid();
                   return (
                     <tr key={item.stt}>
                       <td style={tdstyle}>{index + 1}</td>
                       <td style={tdstyle}>{maGoi}</td>
                       <td style={tdstyle}>{item.tengoive}</td>
-                      <td style={tdstyle}> {isNapdungValid ? napdungDate.format('DD/MM/YYYY') : 'Ngày 0 hợp lệ'} 
-                      <br/>  {isTgapdungValid ? tgapdungTime.format('HH:mm:ss') : 'Thời gian 0 hợp lệ'}</td>
-                      <td style={tdstyle}>{isNhethanValid ? nhethanDate.format('DD/MM/YYYY') : 'Ngày 0 hợp lệ'} 
-                      <br/> {isTghethanValid ? tghethanTime.format('HH:mm:ss') : 'Thời gian 0 hợp lệ'}</td>
+                      <td style={tdstyle}> {item.napdung} <br/> {item.tgapdung}</td>
+                      <td style={tdstyle}>{item.nhethan} <br/> {item.tghethan}</td>
                       <td style={tdstyle}>{doigiatri(item.giave)} VNĐ</td>
                       <td style={tdstyle}>
       {item.giacombo && item.sovecombo ? `${doigiatri(item.giacombo)} VNĐ / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
