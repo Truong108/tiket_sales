@@ -8,25 +8,25 @@ import api from "../../firebase/firebaseAPI";
 interface ModalProps {
   isModalOpen: boolean;
   onClose: () => void;
-  valuengaysudung: string;
-  idsudung: string;
+  valueDate: string;
+  iduser: string;
 }
-const ModalQuanlive: React.FC<ModalProps> = ({ isModalOpen, onClose , valuengaysudung, idsudung}) => {
+const ModalQuanlive: React.FC<ModalProps> = ({ isModalOpen, onClose , valueDate, iduser}) => {
     const dayjs = require('dayjs');
     const localizedFormat = require('dayjs/plugin/localizedFormat');
     const viLocale = require('dayjs/locale/vi');
     dayjs.extend(localizedFormat);
     dayjs.locale(viLocale);
-    const [ngaysudung, setngaysudung] = useState<dayjs.Dayjs | null>
+    const [date, setdate] = useState<dayjs.Dayjs | null>
     (
-      valuengaysudung ? dayjs(valuengaysudung, "DD/MM/YYYY") : null
+      valueDate ? dayjs(valueDate, "DD/MM/YYYY") : null
     );
-    const dateObject = ngaysudung ? ngaysudung : dayjs(valuengaysudung, "DD/MM/YYYY")
+    const dateObject = date ? date : dayjs(valueDate, "DD/MM/YYYY")
     const handlesave = async () =>{
       try{
-        if(ngaysudung){
-          const docRef = doc(collection(api,"ticket"), idsudung);
-          await updateDoc(docRef,{ngaysudung: ngaysudung.format("DD/MM/YYYY")})
+        if(date){
+          const docRef = doc(collection(api,"ticket"), iduser);
+          await updateDoc(docRef,{date: date.format("DD/MM/YYYY")})
         }
         onClose();
       } catch(err){
@@ -68,7 +68,7 @@ const ModalQuanlive: React.FC<ModalProps> = ({ isModalOpen, onClose , valuengays
         marginRight: '120px',
         fontWeight: 'bold',
         marginTop: '5px'}}>Hạn sử dụng</p>
-        <CalendarDatevl ngaysudung={dateObject} onDateChange={setngaysudung} />
+        <CalendarDatevl date={dateObject} onDateChange={setdate} />
       </div>
      <Space wrap style={{ marginTop: '22px', 
       marginLeft: '70px'}}>

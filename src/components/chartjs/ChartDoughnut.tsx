@@ -15,6 +15,11 @@ interface TypeChart {
   labels: string[];
 }
 
+interface PropsData {
+  unUse: any
+  haveUse: any
+}
+
 const chartData: TypeChart = {
   labels: [],
   datasets: [
@@ -26,11 +31,11 @@ const chartData: TypeChart = {
   ],
 };
 
-function ChartDoughnut() {
+function ChartDoughnut(props: PropsData) {
   const [chartDemo, setChart] = useState<TypeChart>(chartData);
 
   useEffect(() => {
-    const data = [120, 250];
+    const data = [props.unUse, props.haveUse];
     const backgroundColors = [
       'rgb(255, 138, 72)', //Cam
       'rgb(54, 162, 235)', // Blue 
@@ -47,7 +52,7 @@ function ChartDoughnut() {
         },
       ],
     });
-  }, []);
+  }, [props.unUse, props.haveUse]);
 
   console.log(chartDemo);
 

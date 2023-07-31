@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/styles.css';
-import ModalGoidichvu from './Modal/ModalGoidichvu';
+import ModalGoidichvu from './Modal/ModalThemGoidichvu';
 
 function Goidichvu() {
   const [isSelected1, setSelected1] = useState(false);

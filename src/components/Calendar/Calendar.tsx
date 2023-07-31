@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import dayjs from 'dayjs';
 
 interface ValueCalendar{
-    ngaysudung: dayjs.Dayjs | null;
+    date: dayjs.Dayjs | null;
     onDateChange: (date: dayjs.Dayjs) => void
 }
-export const CalendarDatevl: React.FC<ValueCalendar> = ({ngaysudung, onDateChange}) => {
-    const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(ngaysudung);
+export const CalendarDatevl: React.FC<ValueCalendar> = ({date, onDateChange}) => {
+    const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(date);
     useEffect(() => {
-      setSelectedDate(ngaysudung);
-    }, [ngaysudung]);
+      setSelectedDate(date);
+    }, [date]);
     const handleDateChange = (date: any) => {
       setSelectedDate(date);
       onDateChange(date);

@@ -5,9 +5,49 @@ import { Chart, registerables } from 'chart.js';
 import ChartDoughnut from './chartjs/ChartDoughnut';
 import { CalendarOutlined } from "@ant-design/icons";
 import ChartDoughnut2 from './chartjs/ChartDoughnut2';
+import { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import api from '../firebase/firebaseAPI';
 Chart.register(...registerables);
-
+interface DataFirebase {
+  id: string;
+  stt: number;
+  bookingcode: string;
+  tinhtrang: string;
+  ngaysudung: string;
+  ngayxuatve: string;
+  sove: string;
+  congcheck: string;
+}
 function Home() {
+  const [data, setData] = useState<DataFirebase[]>([]);
+  const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
+  const [isDataFetched, setIsDataFetched] = useState(false);
+  const fetchData = async () => {
+    const querySnapshot = await getDocs(collection(api, "ticket"));
+    const fetchedData: DataFirebase[] = [];
+    querySnapshot.forEach((doc) => {
+      fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
+    });
+    setData(fetchedData);
+    setFilteredData(fetchedData);
+    setIsDataFetched(true);
+  };
+
+  useEffect(() => {
+    if (!isDataFetched) {
+      fetchData();
+    }
+  }, [isDataFetched]);
+
+  const unUse = data.filter(item => item.tinhtrang === "Chưa sử dụng")
+  const haveUse = data.filter(item => item.tinhtrang === "Đã sử dụng")
+
+  console.log(unUse)
+
+  console.log(haveUse);
+  
+
   const { Title } = Typography;
   return (
   <div className='ct'>
@@ -21,9 +61,9 @@ function Home() {
           </div>
           <Col span={12} style={{ textAlign: "end", marginLeft: 600, marginBottom: 30 }}>
             <DatePicker
+              picker='month'
               suffixIcon={<CalendarOutlined />}
-              showToday={false}
-              format="YYYY-MM-DD"
+              format="MM-YYYY"
             />
           </Col>
           <Row style={{ marginBottom: "10px" }}>
@@ -42,9 +82,9 @@ function Home() {
           <Row>
           <Col span={6} style={{ padding: 15, marginTop: 30, marginLeft: 10 }}>
             <DatePicker
+              picker='month'
               suffixIcon={<CalendarOutlined />}
-              showToday={false}
-              format="YYYY-MM-DD"
+              format="MM-YYYY"
             />
           </Col>
           <Col span={6}>
@@ -61,7 +101,7 @@ function Home() {
               >
                 Gói gia đình
               </Title>
-              <ChartDoughnut></ChartDoughnut>
+              <ChartDoughnut unUse={unUse.length} haveUse={haveUse.length} />
             </div>
           </Col>
           <Col span={6}>

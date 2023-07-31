@@ -16,24 +16,29 @@ interface datafirebase {
   }
   interface TableDoisoat {
     onfillter: string;
-    tungay: string | null;
-    denngay: string | null;
+    sinceday: string | null;
+    todate: string | null;
   }
-const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, tungay, denngay}) => {
+const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}) => {
     const [filteredData, setFilteredData] = useState<datafirebase[]>([]);
     const [data, setData] = useState<datafirebase[]>([]);
+    const [isDataFetched, setIsDataFetched] = useState(false);
+    const fetchData = async () => {
+      const querySnapshot = await getDocs(collection(api, "soatve"));
+      const fetchedData: datafirebase[] = [];
+      querySnapshot.forEach((doc) => {
+        fetchedData.push({ id: doc.id, ...doc.data() } as datafirebase);
+      });
+      setData(fetchedData);
+      setFilteredData(fetchedData);
+      setIsDataFetched(true);
+    };
+  
     useEffect(() => {
-        const fetchData = async () => {
-          const querySnapshot = await getDocs(collection(api, "soatve"));
-          const fetchedData: datafirebase[] = [];
-          querySnapshot.forEach((doc) => {
-            fetchedData.push({ id: doc.id, ...doc.data() } as datafirebase);
-          });
-          setData(fetchedData);
-          setFilteredData(fetchedData);
-        };
+      if (!isDataFetched) {
         fetchData();
-      }, []);
+      }
+    }, [isDataFetched]);
     const handlevaluesove = (e: React.ChangeEvent<HTMLInputElement>) =>{
         setLocve(e.target.value)
       }
@@ -52,16 +57,16 @@ const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, tungay, denngay}) => 
 
     const currentRows = data.filter((item) => {
       const isDoisoatMatch = onfillter === "Tất cả" || item.doisoat === onfillter;
-      if (!tungay && !denngay) {
+      if (!sinceday && !todate) {
         return isDoisoatMatch;
       }
-      if (tungay && denngay) {
-        const fromDay = Number(tungay.split("/")[0]);
-        const fromMonth = Number(tungay.split("/")[1]) - 1;
-        const fromYear = Number(tungay.split("/")[2]);
-        const toDay = Number(denngay.split("/")[0]);
-        const toMonth = Number(denngay.split("/")[1]) - 1;
-        const toYear = Number(denngay.split("/")[2]);
+      if (sinceday && todate) {
+        const fromDay = Number(sinceday.split("/")[0]);
+        const fromMonth = Number(sinceday.split("/")[1]) - 1;
+        const fromYear = Number(sinceday.split("/")[2]);
+        const toDay = Number(todate.split("/")[0]);
+        const toMonth = Number(todate.split("/")[1]) - 1;
+        const toYear = Number(todate.split("/")[2]);
         const fromDate = new Date(fromYear, fromMonth, fromDay);
         const toDate = new Date(toYear, toMonth, toDay);
         const ngaySuDungDay = Number(item.ngaysudung.split("/")[0]);
@@ -82,11 +87,17 @@ const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, tungay, denngay}) => 
             </div>
             <div>
               <Space wrap style={{marginRight: '20px'}}>
-                <Button type="primary" danger style={{fontFamily: 'Montserrat',
-                fontSize: '18px',fontStyle: 'normal',
-                fontWeight: '700',lineHeight: '26px', 
-                width: '157px', height: '42px',
-                marginTop: '10px', backgroundColor:"#FF993C"}}>
+                <Button 
+                type="primary" 
+                danger 
+                style={{
+                  fontFamily: 'Montserrat',
+                  fontSize: '18px',
+                  fontStyle: 'normal',
+                  fontWeight: '700',
+                  lineHeight: '26px', 
+                  width: '157px', height: '42px',
+                  marginTop: '10px', backgroundColor:"#FF993C"}}>
                   Chốt đối soát 
                 </Button>
               </Space>

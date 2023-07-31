@@ -29,6 +29,8 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
       const [ngaysudung, setNgaysudung] = useState<string>("");
       const [isModalOpen, setModalOpen] = useState(false);
       const [idsudung, setIdngaysudung] = useState<string>("");
+      const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
+      const [isDataFetched, setIsDataFetched] = useState(false);
       const fetchData = async () => {
         const querySnapshot = await getDocs(collection(api, "ticket"));
         const fetchedData: DataFirebase[] = [];
@@ -37,10 +39,14 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
         });
         setData(fetchedData);
         setFilteredData(fetchedData);
+        setIsDataFetched(true);
       };
+    
       useEffect(() => {
-        fetchData();
-      }, [isModalOpen]);
+        if (!isDataFetched) {
+          fetchData();
+        }
+      }, [isDataFetched]);
       const handleOpenModal = (ngaysudungValue: string, idngaysudung: string) => {
         setModalOpen(true);
         setNgaysudung(ngaysudungValue);
@@ -49,7 +55,6 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
       };
       
     const [data, setData] = useState<DataFirebase[]>([]);
-    const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
     const [modal2Open, setModal2Open] = useState(false);
     const [selectedFromDate] = useState<Date | null>(null);
     const [selectedToDate] = useState<Date | null>(null);
@@ -319,7 +324,7 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
               />
             </div>
           </div>
-          <ModalQuanlive idsudung={idsudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} valuengaysudung={ngaysudung}/>
+          <ModalQuanlive iduser={idsudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} valueDate={ngaysudung}/>
     </> );
 }
  

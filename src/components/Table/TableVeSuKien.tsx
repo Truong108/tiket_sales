@@ -36,26 +36,31 @@ const TableVeSuKien: React.FC = () => {
     setIdngaysudung(idsudung);
   };
     const [data, setData] = useState<DataFirebase[]>([]);
-    const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
     const [modal2Open, setModal2Open] = useState(false);
     const [selectedFromDate] = useState<Date | null>(null);
     const [selectedToDate] = useState<Date | null>(null);
     const [value, setValue] = useState<number>(1);
     const [selectedCheckIn, setSelectedCheckIn] = useState<CheckboxValueType[]>([]);
     const [selectAllCheckIn, setSelectAllCheckIn] = useState(false);
-    const [locve, setLocve] = useState<string>("")
+    const [locve, setLocve] = useState<string>("");
+    const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
+    const [isDataFetched, setIsDataFetched] = useState(false);
     const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(api, "ticket"));
+      const querySnapshot = await getDocs(collection(api, "ticket2"));
       const fetchedData: DataFirebase[] = [];
       querySnapshot.forEach((doc) => {
         fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
       });
       setData(fetchedData);
       setFilteredData(fetchedData);
+      setIsDataFetched(true);
     };
+  
     useEffect(() => {
-      fetchData();
-    }, [isModalOpen]);
+      if (!isDataFetched) {
+        fetchData();
+      }
+    }, [isDataFetched]);
     let fillLocve: DataFirebase[];
     fillLocve = data.filter((item) => {
       return typeof item.sove === 'string' && item.sove.includes(locve);
@@ -308,7 +313,7 @@ const TableVeSuKien: React.FC = () => {
               />
             </div>
           </div>
-          <ModalQuanlive idsudung={idsudung} valuengaysudung={ngaysudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+          <ModalQuanlive iduser={idsudung} valueDate={ngaysudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </> );
 }
  

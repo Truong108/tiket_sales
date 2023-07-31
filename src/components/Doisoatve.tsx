@@ -52,12 +52,12 @@ function Doisoatve() {
         </div>
       {isSelected ? <BangDoisoatve 
       onfillter={onfillter} 
-      tungay={beginDate} 
-      denngay={endDate}/> 
+      sinceday={beginDate} 
+      todate={endDate}/> 
       : <BangdoisoatSukien 
       onfillter={onfillter} 
-      tungay={beginDate} 
-      denngay={endDate}/> }
+      sinceday={beginDate} 
+      todate={endDate}/> }
     </div>
     <div className='bang3' id='bang3'>
     <h1 className='danhsachve'>Lọc vé</h1>
