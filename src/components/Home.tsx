@@ -54,7 +54,8 @@ function Home() {
       fetchData2();
     }
   }, [isDataFetched]);
-  const [valueMonth, setValueMonth] = useState<dayjs.Dayjs>()
+  const defaultValue = dayjs().startOf('month').format('M');
+  const [valueMonth, setValueMonth] = useState<dayjs.Dayjs>(dayjs(defaultValue));
   const { Title } = Typography;
   const handleChangeMonth = (month: any) =>{
       setValueMonth(month)

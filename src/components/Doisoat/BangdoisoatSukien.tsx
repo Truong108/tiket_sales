@@ -87,7 +87,7 @@ const BangdoisoatSukien: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}
               </div>
             </div>
             <div>
-              <Space wrap style={{marginRight: '30px'}}>
+              <Space wrap style={{marginRight: '20px'}}>
                 <Button type="primary" danger style={{fontFamily: 'Montserrat',
                 fontSize: '18px',fontStyle: 'normal',
                 fontWeight: '700',lineHeight: '26px', 
@@ -99,7 +99,7 @@ const BangdoisoatSukien: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}
             </div>
           </div>
           <div className="contect">
-              <table className="table bangshow">
+              <table className="table doisoat" style={{width:'950px'}}>
                 <thead>
                   <tr>
                     <th style={{background:"#F1F4F8"}}>STT</th>

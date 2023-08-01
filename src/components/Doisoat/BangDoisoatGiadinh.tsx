@@ -20,7 +20,6 @@ interface datafirebase {
     todate: string | null;
   }
 const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}) => {
-    const [filteredData, setFilteredData] = useState<datafirebase[]>([]);
     const [data, setData] = useState<datafirebase[]>([]);
     const [isDataFetched, setIsDataFetched] = useState(false);
     const fetchData = async () => {
@@ -30,7 +29,6 @@ const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}) =>
         fetchedData.push({ id: doc.id, ...doc.data() } as datafirebase);
       });
       setData(fetchedData);
-      setFilteredData(fetchedData);
       setIsDataFetched(true);
     };
   
@@ -47,13 +45,13 @@ const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}) =>
     fillSoatve = data.filter((item) => {
       return typeof item.sove === 'string' && item.sove.includes(locve);
     });
-    const itemsPerPage = 9;
+    const itemsPerPage = 12;
     const [currentPage, setCurrentPage] = useState<number>(1);
     const handlePageChange = (page: number) => {
       setCurrentPage(page);
     };
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+    const endIndex = Math.min(startIndex + itemsPerPage, data.length);
 
     const currentRows = data.filter((item) => {
       const isDoisoatMatch = onfillter === "Tất cả" || item.doisoat === onfillter;
@@ -104,7 +102,7 @@ const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}) =>
             </div>
           </div>
           <div className="contect">
-              <table className="table bangshow">
+              <table className="table doisoat" style={{width:'950px'}}>
                 <thead>
                   <tr>
                     <th style={{background:"#F1F4F8"}}>STT</th>
