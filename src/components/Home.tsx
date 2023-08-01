@@ -1,10 +1,10 @@
 import { Col, DatePicker, Row, Typography } from 'antd';
 import '../css/styles.css';
-import LineChartComponent from './chartjs/LineChartComponent';
+import LineChartComponent from './Chartjs/LineChartComponent';
 import { Chart, registerables } from 'chart.js';
-import ChartDoughnut from './chartjs/ChartDoughnut';
+import ChartDoughnut from './Chartjs/ChartDoughnut';
 import { CalendarOutlined } from "@ant-design/icons";
-import ChartDoughnut2 from './chartjs/ChartDoughnut2';
+import ChartDoughnut2 from './Chartjs/ChartDoughnut2';
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import api from '../firebase/firebaseAPI';
@@ -19,6 +19,7 @@ interface DataFirebase {
   sove: string;
   congcheck: string;
 }
+
 function Home() {
   const [data, setData] = useState<DataFirebase[]>([]);
   const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
@@ -42,11 +43,6 @@ function Home() {
 
   const unUse = data.filter(item => item.tinhtrang === "Chưa sử dụng")
   const haveUse = data.filter(item => item.tinhtrang === "Đã sử dụng")
-
-  console.log(unUse)
-
-  console.log(haveUse);
-  
 
   const { Title } = Typography;
   return (
@@ -89,7 +85,7 @@ function Home() {
           </Col>
           <Col span={6}>
             <div
-              style={{ width: "250px", height: "250px", textAlign: "center" }}
+              style={{ width: "250px", height: "240px", textAlign: "center" }}
             >
               <Title
                 style={{
@@ -106,7 +102,7 @@ function Home() {
           </Col>
           <Col span={6}>
             <div
-              style={{ width: "250px", height: "250px", textAlign: "center" }}
+              style={{ width: "250px", height: "240px", textAlign: "center" }}
             >
               <Title
                 style={{
@@ -118,7 +114,7 @@ function Home() {
               >
                 Gói sự kiện
               </Title>
-              <ChartDoughnut2></ChartDoughnut2>
+              <ChartDoughnut2 />
             </div>
           </Col>
          <Col className='colorss'>

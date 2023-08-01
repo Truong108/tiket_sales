@@ -1,39 +1,43 @@
 import { Button, Modal, Space } from "antd";
 import '../../css/modalQuanlive.css';
-import { CalendarDatevl } from "../Calendar/Calendar";
+
 import dayjs from 'dayjs';
 import { useState } from "react";
 import { collection, doc, updateDoc } from "firebase/firestore";
 import api from "../../firebase/firebaseAPI";
+import { CalendarDateValue } from "../Calendar/CalendarDateValue";
+
+
 interface ModalProps {
   isModalOpen: boolean;
   onClose: () => void;
-  valueDate: string;
-  iduser: string;
+  valueNgaysudung: string;
+  idNgaysudung: string;
 }
-const ModalQuanlive: React.FC<ModalProps> = ({ isModalOpen, onClose , valueDate, iduser}) => {
-    const dayjs = require('dayjs');
-    const localizedFormat = require('dayjs/plugin/localizedFormat');
-    const viLocale = require('dayjs/locale/vi');
-    dayjs.extend(localizedFormat);
-    dayjs.locale(viLocale);
-    const [date, setdate] = useState<dayjs.Dayjs | null>
-    (
-      valueDate ? dayjs(valueDate, "DD/MM/YYYY") : null
-    );
-    const dateObject = date ? date : dayjs(valueDate, "DD/MM/YYYY")
-    const handlesave = async () =>{
-      try{
-        if(date){
-          const docRef = doc(collection(api,"ticket"), iduser);
-          await updateDoc(docRef,{date: date.format("DD/MM/YYYY")})
-        }
-        onClose();
-      } catch(err){
 
+const ModalQuanlive: React.FC<ModalProps> = ({ 
+  isModalOpen, 
+  onClose , 
+  valueNgaysudung, 
+  idNgaysudung}) => {
+  const [ngaysudung, setNgaysudung] = useState<dayjs.Dayjs | null>(
+    valueNgaysudung ? dayjs(valueNgaysudung, "DD/MM/YYYY") : null
+  );    
+  const dateObject = ngaysudung ? ngaysudung : dayjs(valueNgaysudung, "DD/MM/YYYY");
+  const handleEventSave = async () => {
+    try {
+      if (ngaysudung) {
+        const docRef = doc(collection(api, "ticket2"), idNgaysudung);
+        await updateDoc(docRef, { datesudung: ngaysudung.format("DD/MM/YYYY") });
       }
+      onClose();
+    } catch (err) {
+      console.log("Lỗi đổi ngày sử dụng (gói sự kiện)", err);
     }
-    if (!isModalOpen) return null;
+  };
+  const handleEventDateChange = (date: dayjs.Dayjs | null) => {
+    setNgaysudung(date);
+  };
     return ( <>
     <Modal
       title={<h5 style={{ textAlign: 'center', 
@@ -68,7 +72,7 @@ const ModalQuanlive: React.FC<ModalProps> = ({ isModalOpen, onClose , valueDate,
         marginRight: '120px',
         fontWeight: 'bold',
         marginTop: '5px'}}>Hạn sử dụng</p>
-        <CalendarDatevl date={dateObject} onDateChange={setdate} />
+        <CalendarDateValue dateValue={dateObject} onDateChange={handleEventDateChange} />
       </div>
      <Space wrap style={{ marginTop: '22px', 
       marginLeft: '70px'}}>
@@ -79,7 +83,7 @@ const ModalQuanlive: React.FC<ModalProps> = ({ isModalOpen, onClose , valueDate,
         fontWeight: '700', 
         lineHeight: '26px', 
         color: '#FF993C'}}>Hủy</Button>
-      <Button danger onClick={handlesave} style={{ width: '160px', 
+      <Button danger onClick={handleEventSave} style={{ width: '160px', 
         height: '40px', 
         fontFamily: 'Montserrat', 
         fontSize: '18px', 

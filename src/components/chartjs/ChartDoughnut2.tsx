@@ -30,13 +30,12 @@ function PieChartComponent2() {
   const [chartDemo, setChart] = useState<TypeChart>(chartData);
 
   useEffect(() => {
-    const data = [240, 170];
+    const data = [270, 170];
     const backgroundColors = [
       'rgb(255, 138, 72)', //Cam
       'rgb(54, 162, 235)', // Blue 
     ];
     const labels = ['Vé chưa sử dụng', 'Vé đã sử dụng'];
-
     setChart({
       labels,
       datasets: [

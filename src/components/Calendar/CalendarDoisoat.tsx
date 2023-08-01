@@ -15,7 +15,7 @@ export const CalendarTime: React.FC<CalenderTimeProps> = ({ onTimeChange }) => {
     onTimeChange(time.format("HH:mm:ss"));
   };
   return (
-    <Space style={{ margin: "0" }}>
+    <Space>
       <TimePicker
         className="custom-timepicker"
         placeholder="HH:mm:ss"

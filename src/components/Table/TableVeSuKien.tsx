@@ -13,27 +13,27 @@ import { Button,
 import '../../css/styles.css';
 import { useEffect, useState } from 'react';
 import { CheckboxValueType } from 'antd/es/checkbox/Group';
-import ModalQuanlive from '../Modal/ModalQuanlive';
-
+import Modalsukien from '../Modal/Modalsukien';
     interface DataFirebase {
         id: string;
         stt: number;
         bookingcode: string;
         tensk: string;
-        tinhtrang: string;
-        ngaysudung: string;
+        ttrang: string;
+        datesudung: string;
         ngayxuatve: string;
         sove: string;
         congcheck: string;
     }
 const TableVeSuKien: React.FC = () => {
-  const [ngaysudung, setNgaysudung] = useState<string>("")
+  const [datesudung, setNgaysudung] = useState<string>("")
   const [idsudung, setIdngaysudung] = useState<string>("")
   const [isModalOpen, setModalOpen] = useState(false);
-  const handleOpenModal = (ngaysudung:string, idsudung:string) => {
+  const handleOpenModal = (ngaysudungValue: string, idngaysudung: string) => {
     setModalOpen(true);
-    setNgaysudung(ngaysudung);
-    setIdngaysudung(idsudung);
+    setNgaysudung(ngaysudungValue);
+    setIdngaysudung(idngaysudung);
+    fetchData();
   };
     const [data, setData] = useState<DataFirebase[]>([]);
     const [modal2Open, setModal2Open] = useState(false);
@@ -55,7 +55,6 @@ const TableVeSuKien: React.FC = () => {
       setFilteredData(fetchedData);
       setIsDataFetched(true);
     };
-  
     useEffect(() => {
       if (!isDataFetched) {
         fetchData();
@@ -79,13 +78,13 @@ const TableVeSuKien: React.FC = () => {
       const toDate = selectedToDate;
       const filteredData = data.filter((ticket) => {
         if (selectedStatus !== 1) {
-          if (selectedStatus === 2 && ticket.tinhtrang !== 'Đã sử dụng') {
+          if (selectedStatus === 2 && ticket.ttrang !== 'Đã sử dụng') {
             return false; 
           }
-          if (selectedStatus === 3 && ticket.tinhtrang !== 'Chưa sử dụng') {
+          if (selectedStatus === 3 && ticket.ttrang !== 'Chưa sử dụng') {
             return false; 
           }
-          if (selectedStatus === 4 && ticket.tinhtrang !== 'Hết hạn') {
+          if (selectedStatus === 4 && ticket.ttrang !== 'Hết hạn') {
             return false; 
           }
         }
@@ -95,7 +94,7 @@ const TableVeSuKien: React.FC = () => {
           }
         }
         if (fromDate && toDate) {
-          const ticketDate = new Date(ticket.ngaysudung);
+          const ticketDate = new Date(ticket.datesudung);
           if (ticketDate < fromDate || ticketDate > toDate) {
             return false; 
           }
@@ -124,7 +123,7 @@ const TableVeSuKien: React.FC = () => {
     };
     const handlevaluesove = (e: React.ChangeEvent<HTMLInputElement>) =>{
       setLocve(e.target.value)
-  }
+    }
     return ( <>
       <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
             <div className='searchve'>
@@ -238,21 +237,21 @@ const TableVeSuKien: React.FC = () => {
                     tdstyle = { backgroundColor: "#F7F8FB" };
                   }
                   let tinhtrangStyle = {}
-                  if(item.tinhtrang ==="Đã sử dụng"){
+                  if(item.ttrang ==="Đã sử dụng"){
                       tinhtrangStyle ={color:"#919DBA", 
                       backgroundColor:"#EAF1F8", 
                       border:"1px solid #919DBA", 
                       padding:"5px 10px", 
                       borderRadius:"8px"}
                   }
-                   if(item.tinhtrang ==="Chưa sử dụng"){
+                   if(item.ttrang ==="Chưa sử dụng"){
                     tinhtrangStyle={color:"#03AC00", 
                     backgroundColor:"#EAF1F8" , 
                     border:"1px solid #03AC00", 
                     padding:"5px 10px", 
                     borderRadius:"8px"}
                    }
-                   if(item.tinhtrang ==="Hết hạn"){
+                   if(item.ttrang ==="Hết hạn"){
                     tinhtrangStyle={color:"#FD5959", 
                     backgroundColor:"#F8EBE8" , 
                     border:"1px solid #FD5959", 
@@ -265,11 +264,11 @@ const TableVeSuKien: React.FC = () => {
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
                       <td style={tdstyle}>{item.sove}</td>
-                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
-                      <td style={tdstyle}>{item.ngaysudung}</td>
+                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.ttrang}</span></td>
+                      <td style={tdstyle}>{item.datesudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
-                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"  onClick={() => handleOpenModal(item.ngaysudung, item.id)}></i></td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"  onClick={() => handleOpenModal(item.datesudung, item.id)}></i></td>
                     </tr>
                   );
                 }) : currentData.map((item, index) => {
@@ -278,14 +277,26 @@ const TableVeSuKien: React.FC = () => {
                     tdstyle = { backgroundColor: "#F7F8FB" };
                   }
                   let tinhtrangStyle = {}
-                  if(item.tinhtrang ==="Đã sử dụng"){
-                      tinhtrangStyle ={color:"#919DBA", backgroundColor:"#EAF1F8", border:"1px solid #919DBA", padding:"5px 10px", borderRadius:"8px"}
+                  if(item.ttrang ==="Đã sử dụng"){
+                      tinhtrangStyle ={color:"#919DBA", 
+                      backgroundColor:"#EAF1F8",
+                      border:"1px solid #919DBA", 
+                      padding:"5px 10px", 
+                      borderRadius:"8px"}
                   }
-                   if(item.tinhtrang ==="Chưa sử dụng"){
-                    tinhtrangStyle={color:"#03AC00", backgroundColor:"#EAF1F8" , border:"1px solid #03AC00", padding:"5px 10px", borderRadius:"8px"}
+                   if(item.ttrang ==="Chưa sử dụng"){
+                    tinhtrangStyle={color:"#03AC00", 
+                    backgroundColor:"#EAF1F8" , 
+                    border:"1px solid #03AC00", 
+                    padding:"5px 10px", 
+                    borderRadius:"8px"}
                    }
-                   if(item.tinhtrang ==="Hết hạn"){
-                    tinhtrangStyle={color:"#FD5959", backgroundColor:"#F8EBE8" , border:"1px solid #FD5959", padding:"5px 10px", borderRadius:"8px"}
+                   if(item.ttrang ==="Hết hạn"){
+                    tinhtrangStyle={color:"#FD5959", 
+                    backgroundColor:"#F8EBE8" , 
+                    border:"1px solid #FD5959", 
+                    padding:"5px 10px", 
+                    borderRadius:"8px"}
                    }
                   return (
                     <tr className='more' key={item.stt}>
@@ -293,11 +304,11 @@ const TableVeSuKien: React.FC = () => {
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
                       <td style={tdstyle}>{item.tensk}</td>
-                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
-                      <td style={tdstyle}>{item.ngaysudung}</td>
+                      <td style={tdstyle}><span style={tinhtrangStyle}><i className="bi bi-circle-fill"></i>{item.ttrang}</span></td>
+                      <td style={tdstyle}>{item.datesudung}</td>
                       <td style={tdstyle}>{item.ngayxuatve}</td>
                       <td style={tdstyle}>{item.congcheck}</td>
-                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"  onClick={() =>handleOpenModal(item.ngaysudung, item.id)}></i></td>
+                      <td style={tdstyle}><i className="bi bi-three-dots-vertical"  onClick={() =>handleOpenModal(item.datesudung, item.id)}></i></td>
                     </tr>
                   );
                 })}
@@ -313,7 +324,12 @@ const TableVeSuKien: React.FC = () => {
               />
             </div>
           </div>
-          <ModalQuanlive iduser={idsudung} valueDate={ngaysudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+          <Modalsukien
+        idNgaysudung={idsudung}
+        isModalOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        valueNgaysudung={datesudung}         
+        />
     </> );
 }
  

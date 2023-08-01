@@ -14,7 +14,7 @@ import { Button,
 import '../../css/styles.css';
 import { useEffect, useState } from 'react';
 import { CheckboxValueType } from 'antd/es/checkbox/Group';
-import ModalQuanlive from '../Modal/ModalQuanlive';
+import Modalgiadinh from '../Modal/Modalgiadinh';
   interface DataFirebase {
     id: string;
     stt: number;
@@ -61,7 +61,7 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
     const [value, setValue] = useState<number>(1);
     const [selectedCheckIn, setSelectedCheckIn] = useState<CheckboxValueType[]>([]);
     const [selectAllCheckIn, setSelectAllCheckIn] = useState(false);
-    const [locve, setLocve] = useState<string>("")
+    const [locve, setLocve] = useState<string>(''); 
     let fillLocve: DataFirebase[];
     fillLocve = data.filter((item) => {
       return typeof item.sove === 'string' && item.sove.includes(locve);
@@ -126,12 +126,11 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
     const handlevaluesove = (e: React.ChangeEvent<HTMLInputElement>) =>{
       setLocve(e.target.value)
     }
-
     return ( <>
       <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
             <div className='searchve'>
               <div className='timkiemsove col-auto col-sm-8'>
-                <input className="search__input" type="text" placeholder="Tìm bằng số vé"  onChange={handlevaluesove} />
+                <input className="search__input" type="text" placeholder="Tìm bằng số vé"onChange={handlevaluesove} />
               </div>
             </div>
             <div>
@@ -261,7 +260,7 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
                     borderRadius:"8px"}
                    }
                   return (
-                    <tr className='more' key={item.stt}>
+                    <tr className='more' key={item.id}>
                       <td style={tdstyle}>{startIndex + index + 1}</td>
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
@@ -300,7 +299,7 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
                     borderRadius:"8px"}
                    }
                   return (
-                    <tr className='more' key={item.stt}>
+                    <tr className='more' key={item.id}>
                       <td style={tdstyle}>{startIndex + index + 1}</td>
                       <td style={tdstyle}>{item.bookingcode}</td>
                       <td style={tdstyle}>{item.sove}</td>
@@ -324,7 +323,12 @@ import ModalQuanlive from '../Modal/ModalQuanlive';
               />
             </div>
           </div>
-          <ModalQuanlive iduser={idsudung} isModalOpen={isModalOpen} onClose={() => setModalOpen(false)} valueDate={ngaysudung}/>
+          <Modalgiadinh 
+        idNgaysudung={idsudung}
+        isModalOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        valueNgaysudung={ngaysudung}      
+        />
     </> );
 }
  
