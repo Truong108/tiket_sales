@@ -1,13 +1,14 @@
+/* eslint-disable array-callback-return */
 import { Col, DatePicker, Row, Typography } from 'antd';
 import '../css/styles.css';
 import LineChartComponent from './Chartjs/LineChartComponent';
 import { Chart, registerables } from 'chart.js';
 import ChartDoughnut from './Chartjs/ChartDoughnut';
 import { CalendarOutlined } from "@ant-design/icons";
-import ChartDoughnut2 from './Chartjs/ChartDoughnut2';
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import api from '../firebase/firebaseAPI';
+import dayjs from 'dayjs';
 Chart.register(...registerables);
 interface DataFirebase {
   id: string;
@@ -18,33 +19,74 @@ interface DataFirebase {
   ngayxuatve: string;
   sove: string;
   congcheck: string;
+  giave: number;
+  giav: number;
+  datesudung:string;
+  ttrang:string;
 }
-
 function Home() {
-  const [data, setData] = useState<DataFirebase[]>([]);
-  const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
   const [isDataFetched, setIsDataFetched] = useState(false);
-  const fetchData = async () => {
+  const [dataGiadinh, setDataGiadinh] = useState<DataFirebase[]>([]);
+  const [dataSukien, setDataSukien] = useState<DataFirebase[]>([]);
+
+  const fetchData1 = async () => {
     const querySnapshot = await getDocs(collection(api, "ticket"));
     const fetchedData: DataFirebase[] = [];
     querySnapshot.forEach((doc) => {
       fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
     });
-    setData(fetchedData);
-    setFilteredData(fetchedData);
+    setDataGiadinh(fetchedData);
+    setIsDataFetched(true);
+  };
+  const fetchData2 = async () => {
+    const querySnapshot = await getDocs(collection(api, "ticket2"));
+    const fetchedData: DataFirebase[] = [];
+    querySnapshot.forEach((doc) => {
+      fetchedData.push({ id: doc.id, ...doc.data() } as DataFirebase);
+    });
+    setDataSukien(fetchedData);
     setIsDataFetched(true);
   };
 
   useEffect(() => {
     if (!isDataFetched) {
-      fetchData();
+      fetchData1();
+      fetchData2();
     }
   }, [isDataFetched]);
-
-  const unUse = data.filter(item => item.tinhtrang === "Chưa sử dụng")
-  const haveUse = data.filter(item => item.tinhtrang === "Đã sử dụng")
-
+  const [valueMonth, setValueMonth] = useState<dayjs.Dayjs>()
   const { Title } = Typography;
+  const handleChangeMonth = (month: any) =>{
+      setValueMonth(month)
+  }
+  let totalVedasudungGiadinh = 0
+  let totalVechuasudungGiadinh = 0
+  let totalVedasudungSukien = 0
+  let totalVechuasudungSukien = 0
+  dataGiadinh.map((item) => {
+      let month = Number(valueMonth?.format("M"))
+      let monthValue = Number(item.ngaysudung.split("/")[1]) 
+      if(month === monthValue){
+        if(item.tinhtrang === "Đã sử dụng"){
+          totalVedasudungGiadinh += item.giave
+        }
+        else if(item.tinhtrang === "Chưa sử dụng"){
+          totalVechuasudungGiadinh += item.giave
+        };
+      };
+  })
+  dataSukien.map((item) => {
+    let month = Number(valueMonth?.format("M"))
+    let monthValue = Number(item.datesudung.split("/")[1]) 
+    if(month === monthValue){
+      if(item.ttrang === "Đã sử dụng"){
+        totalVedasudungSukien += item.giav
+      }
+      else if(item.ttrang === "Chưa sử dụng"){
+        totalVechuasudungSukien += item.giav
+      }
+    }
+  })
   return (
   <div className='ct'>
   <div style={{ display: 'flex'}}>
@@ -78,6 +120,7 @@ function Home() {
           <Row>
           <Col span={6} style={{ padding: 15, marginTop: 30, marginLeft: 10 }}>
             <DatePicker
+              onChange={handleChangeMonth}
               picker='month'
               suffixIcon={<CalendarOutlined />}
               format="MM-YYYY"
@@ -97,7 +140,7 @@ function Home() {
               >
                 Gói gia đình
               </Title>
-              <ChartDoughnut unUse={unUse.length} haveUse={haveUse.length} />
+              <ChartDoughnut unUse={totalVedasudungGiadinh} haveUse={totalVechuasudungGiadinh} />
             </div>
           </Col>
           <Col span={6}>
@@ -114,7 +157,7 @@ function Home() {
               >
                 Gói sự kiện
               </Title>
-              <ChartDoughnut2 />
+              <ChartDoughnut  unUse={totalVedasudungSukien} haveUse={totalVechuasudungSukien}/>
             </div>
           </Col>
          <Col className='colorss'>

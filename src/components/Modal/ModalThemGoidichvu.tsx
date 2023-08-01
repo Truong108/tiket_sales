@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { FormOutlined } from "@ant-design/icons";
 import { CalendarDateValue, CalendarTime } from "../Calendar/CalendarDoisoat";
+import ModalCapnhatGDV from "./ModalCapnhatGDV";
 dayjs.extend(customParseFormat)
 interface datafirebase {
     id: string;
@@ -32,6 +33,7 @@ const ModalGoidichvu = () => {
     }
     return value.toLocaleString("vi-VN");
   };
+  const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modal2Open, setModal2Open] = useState(false);
     const [data, setData] = useState<datafirebase[]>([]);
     const [tengoive, setTenGoiVe] = useState('');
@@ -124,6 +126,9 @@ const ModalGoidichvu = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
     const currentData = data.slice(startIndex, endIndex);
+    const handleOpenModal = () => {
+      setModalUpdateOpen(true);
+    };
     return ( <>
          <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
           <div className='searchve'>
@@ -316,12 +321,14 @@ const ModalGoidichvu = () => {
                       </td>
                       <td style={tdstyle}><span style={tinhtrangStyle}>
                       <i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
-                      <td style={tdstyle}><FormOutlined /> Cập nhật</td>
+                      <td style={{...tdstyle, color: '#FF993C'}} onClick={handleOpenModal}> 
+                      <FormOutlined/> Cập nhật</td>
                     </tr>
                   )
                 })}
               </tbody>
             </table>
+            <ModalCapnhatGDV isOpen={modalUpdateOpen} onClose={() => setModalUpdateOpen(false)}/>
             <div className="direction-components" style={{display: 'flex',justifyContent: 'center'}}>
             <Pagination
               current={currentPage}
