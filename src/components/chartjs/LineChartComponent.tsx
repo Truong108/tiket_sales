@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { Chart, LineElement } from "chart.js/auto";
+Chart.register(LineElement);
 
 interface DataMonth {
   day: string;
@@ -21,18 +23,28 @@ interface ChartData {
   labels: string[];
   datasets: DataSets[];
 }
+interface valueTuan {
+  tuan1: string;
+  tuan2: string;
+  tuan3: string;
+  tuan4: string;
+  tuan5: string;
+}
 
-const dataList: DataMonth[] = [
-  { day: "Thứ 2", amount: "130.0" },
-  { day: "Thứ 3", amount: "186.0" },
-  { day: "Thứ 4", amount: "140.0" },
-  { day: "Thứ 5", amount: "248.0" },
-  { day: "Thứ 6", amount: "210.0" },
-  { day: "Thứ 7", amount: "260.0" },
-  { day: "CN", amount: "200.0" },
+const LineChartComponent: React.FC<valueTuan> = ({
+  tuan1,
+  tuan2,
+  tuan3,
+  tuan4,
+  tuan5,
+}) => {
+  const dataList: DataMonth[] = [
+  { day: "01 - 07", amount: tuan1.toString() },
+  { day: "08 - 14", amount: tuan2.toString() },
+  { day: "15 - 21", amount: tuan3.toString() },
+  { day: "22 - 28", amount: tuan4.toString() },
+  { day: "29 - 31", amount: tuan5.toString() },
 ];
-
-function LineChartComponent() {
   const [chartData, setChartData] = useState<ChartData>({
     labels: [],
     datasets: [
@@ -65,7 +77,7 @@ function LineChartComponent() {
         },
       ],
     });
-  }, []);
+  }, [tuan1, tuan2, tuan3, tuan4, tuan5]);
 
   const createLinearGradient = () => {
     const ctx = document.createElement("canvas").getContext("2d");
