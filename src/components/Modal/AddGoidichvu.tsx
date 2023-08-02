@@ -33,7 +33,7 @@ const AddGoidichvu = () => {
     }
     return value.toLocaleString("vi-VN");
   };
-  const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
+    const [modalUpdateOpen, setModalUpdateOpen] = useState(false);
     const [modal2Open, setModal2Open] = useState(false);
     const [data, setData] = useState<datafirebase[]>([]);
     const [tengoive, setTenGoiVe] = useState('');
@@ -63,7 +63,7 @@ const AddGoidichvu = () => {
     const giaVeComboFormatted = doigiatri(giacombo);
     const soveComboFormatted = doigiatri(sovecombo);
     const [filteredData, setFilteredData] = useState<datafirebase[]>([]);
-      const [isDataFetched, setIsDataFetched] = useState(false);
+    // const [isDataFetched, setIsDataFetched] = useState(false);
       const fetchData = async () => {
         const querySnapshot = await getDocs(collection(api, "goive"));
         const fetchedData: datafirebase[] = [];
@@ -72,13 +72,16 @@ const AddGoidichvu = () => {
         });
         setData(fetchedData);
         setFilteredData(fetchedData);
-        setIsDataFetched(true);
+        // setIsDataFetched(true);
       };
       useEffect(() => {
-        if (!isDataFetched) {
-          fetchData();
-        }
-      }, [isDataFetched,modalUpdateOpen, modal2Open]);
+        fetchData();
+      }, [modalUpdateOpen, modal2Open])
+      // useEffect(() => {
+      //   if (!isDataFetched) {
+      //     fetchData();
+      //   }
+      // }, [isDataFetched, modalUpdateOpen, modal2Open]);
     const handleSave = async () => {
         try {
           const goive = {
@@ -118,7 +121,7 @@ const AddGoidichvu = () => {
         console.log(`selected ${value}`);
         setTinhTrang(value);
       };
-    const itemsPerPage = 10;
+    const itemsPerPage = 8;
     const [currentPage, setCurrentPage] = useState<number>(1);
     const handlePageChange = (page: number) => {
       setCurrentPage(page);

@@ -30,7 +30,7 @@ import Modalgiadinh from '../Modal/Modalgiadinh';
       const [isModalOpen, setModalOpen] = useState(false);
       const [idsudung, setIdngaysudung] = useState<string>("");
       const [filteredData, setFilteredData] = useState<DataFirebase[]>([]);
-      const [isDataFetched, setIsDataFetched] = useState(false);
+      // const [isDataFetched, setIsDataFetched] = useState(false);
       const fetchData = async () => {
         const querySnapshot = await getDocs(collection(api, "ticket"));
         const fetchedData: DataFirebase[] = [];
@@ -39,14 +39,16 @@ import Modalgiadinh from '../Modal/Modalgiadinh';
         });
         setData(fetchedData);
         setFilteredData(fetchedData);
-        setIsDataFetched(true);
+        // setIsDataFetched(true);
       };
-    
       useEffect(() => {
-        if (!isDataFetched) {
-          fetchData();
-        }
-      }, [isDataFetched]);
+        fetchData();
+      },[isModalOpen])
+      // useEffect(() => {
+      //   if (!isDataFetched) {
+      //     fetchData();
+      //   }
+      // }, [isDataFetched]);
       const handleOpenModal = (ngaysudungValue: string, idngaysudung: string) => {
         setModalOpen(true);
         setNgaysudung(ngaysudungValue);

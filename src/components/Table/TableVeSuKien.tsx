@@ -59,7 +59,7 @@ const TableVeSuKien: React.FC = () => {
       if (!isDataFetched) {
         fetchData();
       }
-    }, [isDataFetched]);
+    }, [isDataFetched, modal2Open]);
     let fillLocve: DataFirebase[];
     fillLocve = data.filter((item) => {
       return typeof item.sove === 'string' && item.sove.includes(locve);
