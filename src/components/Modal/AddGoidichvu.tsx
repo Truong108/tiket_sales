@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { FormOutlined } from "@ant-design/icons";
 import { CalendarDateValue, CalendarTime } from "../Calendar/CalendarDoisoat";
-import ModalCapnhatGDV from "./ModalCapnhatGDV";
+import UpdateGoidichvu from "./UpdateGoidichvu";
 dayjs.extend(customParseFormat)
 interface datafirebase {
     id: string;
@@ -26,7 +26,7 @@ interface datafirebase {
     tinhtrang: string;
     capnhat: string;
 }
-const ModalGoidichvu = () => {
+const AddGoidichvu = () => {
   const doigiatri = (value: number | string): string => {
     if (value == null) {
       return ""; 
@@ -78,7 +78,7 @@ const ModalGoidichvu = () => {
         if (!isDataFetched) {
           fetchData();
         }
-      }, [isDataFetched]);
+      }, [isDataFetched,modalUpdateOpen, modal2Open]);
     const handleSave = async () => {
         try {
           const goive = {
@@ -126,8 +126,42 @@ const ModalGoidichvu = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
     const currentData = data.slice(startIndex, endIndex);
-    const handleOpenModal = () => {
+    const [maGoi, setMagoi] = useState<string>("")
+    const [tenGoi, setTengoi] = useState<string>("")
+    const [giaVE, setGiave] = useState<number |null>(null)
+    const [giaveCombo, setGiaveComBo] = useState<number|null>(null)
+    const [soVe, setSove] = useState<number|null>(null)
+    const [tinhTrang, setTinhtrang] = useState<string>("")
+    const [idGoive, setIdgoive] = useState<string>("")
+    const [ngayapdungUpdate, setNgayapdungUpdate] = useState<string | null>("")
+    const [ngayhethanUpdate, setNgayhethanUpdate] = useState<string | null>("")
+    const [tgapdungUpdate, setTgapdungUpdate] = useState<string | null>("")
+    const [tghethanUpdate, setTghethanUpdate] = useState<string | null>("")
+    const handleOpenModal = (
+      id:string,
+      magoi:string, 
+      tengoi:string, 
+      giave:number, 
+      giavecombo:number,
+      sove:number, 
+      tinhtrang:string, 
+      ngayapdungupdate:string,
+      ngayhethanupdate:string,
+      tgapdungUpdate: string,
+      tghethanUpdate: string,
+      ) => {
       setModalUpdateOpen(true);
+      setMagoi(magoi)
+      setTengoi(tengoi)
+      setGiave(giave)
+      setGiaveComBo(giavecombo)
+      setSove(sove)
+      setTinhtrang(tinhtrang)
+      setIdgoive(id)
+      setNgayapdungUpdate(ngayapdungupdate)
+      setNgayhethanUpdate(ngayhethanupdate)
+      setTgapdungUpdate(tgapdungUpdate)
+      setTghethanUpdate(tghethanUpdate)
     };
     return ( <>
          <div style={{marginTop: '20px', display: 'flex', justifyContent: 'space-between'}}>
@@ -309,7 +343,7 @@ const ModalGoidichvu = () => {
                     borderRadius:"8px"}
                    }
                   return (
-                    <tr key={item.stt}>
+                    <tr key={item.id}>
                       <td style={tdstyle}>{index + 1}</td>
                       <td style={tdstyle}>{maGoi}</td>
                       <td style={tdstyle}>{item.tengoive}</td>
@@ -317,20 +351,48 @@ const ModalGoidichvu = () => {
                       <td style={tdstyle}>{item.nhethan} <br/> {item.tghethan}</td>
                       <td style={tdstyle}>{doigiatri(item.giave)} VNĐ</td>
                       <td style={tdstyle}>
-      {item.giacombo && item.sovecombo ? `${doigiatri(item.giacombo)} VNĐ / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
+{item.giacombo && item.sovecombo ? `${doigiatri(item.giacombo)} VNĐ / ${item.sovecombo} Vé` : item.giacombo || item.sovecombo}
                       </td>
                       <td style={tdstyle}><span style={tinhtrangStyle}>
                       <i className="bi bi-circle-fill"></i>{item.tinhtrang}</span></td>
-                      <td style={{...tdstyle, color: '#FF993C'}} onClick={handleOpenModal}> 
+                      <td style={{...tdstyle, color: '#FF993C'}} 
+                      onClick={()=>handleOpenModal(
+                        item.id,
+                        item.magoi, 
+                        item.tengoive, 
+                        item.giave, 
+                        item.giacombo, 
+                        item.sovecombo, 
+                        item.tinhtrang, 
+                        item.napdung, 
+                        item.nhethan, 
+                        item.tgapdung,
+                        item.tghethan
+                        )}> 
                       <FormOutlined/> Cập nhật</td>
                     </tr>
                   )
                 })}
               </tbody>
             </table>
-            <ModalCapnhatGDV isOpen={modalUpdateOpen} onClose={() => setModalUpdateOpen(false)}/>
-            <div className="direction-components" style={{display: 'flex',justifyContent: 'center'}}>
-            <Pagination
+          <UpdateGoidichvu 
+          thoigianapdung={tgapdungUpdate}
+          thoigianhethan={tghethanUpdate}
+          ngayapdung={ngayapdungUpdate} 
+          ngayhethan={ngayhethanUpdate} 
+          idGoiVe={idGoive} 
+          magoi={maGoi} 
+          tengoi={tenGoi} 
+          giave={giaVE} 
+          giaveCombo={giaveCombo}
+          sove={soVe} 
+          modalFinish={modalUpdateOpen} 
+          tinhtrang={tinhTrang}  
+          isOpen={modalUpdateOpen} 
+          onClose={() => setModalUpdateOpen(false)}  
+          />
+          <div className="direction-components" style={{display: 'flex',justifyContent: 'center'}}>
+          <Pagination
               current={currentPage}
               defaultCurrent={1}
               total={data.length}
@@ -342,4 +404,4 @@ const ModalGoidichvu = () => {
     </> );
 }
  
-export default ModalGoidichvu;
+export default AddGoidichvu;

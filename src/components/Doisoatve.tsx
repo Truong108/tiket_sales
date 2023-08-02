@@ -16,7 +16,6 @@ function Doisoatve() {
     const handleValueTinhtrang = (e: React.ChangeEvent<HTMLInputElement>) => {
       setValueTinhtrang(e.target.value);
     };
-  
     const handleFilter = () => {
       setOnfillter(valueTinhtrang);
     };
@@ -24,7 +23,6 @@ function Doisoatve() {
       setSelected(true);
       setHienthi(false);
     };
-  
     const handleButtonClick2 = () => {
       setSelected(false);
       setHienthi(true);
@@ -87,55 +85,55 @@ function Doisoatve() {
         fontWeight: '600',
         lineHeight: '26px'}}>Tình trạng đối soát</p>
         <div className="" style={{marginTop:'60px', marginLeft:'30px'}}>
-                <div
-                  className=""
-                  style={{ alignItems: "center", display: "flex", gap: "10px" }}
-                >
-                  <input
-                    type="radio"
-                    checked={valueTinhtrang === "Tất cả"}
-                    value="Tất cả"
-                    onChange={handleValueTinhtrang}
-                  />{" "}
-                  <span>Tất cả</span>
-                </div>
-                <div
-                  className=""
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    gap: "10px",
-                    marginTop: "5px",
-                  }}
-                >
-                  <input
-                    type="radio"
-                    checked={valueTinhtrang === "Đã đối soát"}
-                    value="Đã đối soát"
-                    onChange={handleValueTinhtrang}
-                    style={{backgroundColor: 'blue'}}
-                  />{" "}
-                  <span>Đã đối soát</span>
-                </div>
-                <div
-                  className=""
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    gap: "10px",
-                    marginTop: "5px",
-                  }}
-                >
-                  <input
-                    type="radio"
-                    checked={valueTinhtrang === "Chưa đối soát"}
-                    value="Chưa đối soát"
-                    onChange={handleValueTinhtrang}
-                  />{" "}
-                  <span>Chưa đối soát</span>
-                </div>
-              </div>
-            </div>
+          <div
+            className=""
+            style={{ alignItems: "center", display: "flex", gap: "10px" }}
+        >
+        <input
+            type="radio"
+            checked={valueTinhtrang === "Tất cả"}
+            value="Tất cả"
+            onChange={handleValueTinhtrang}
+        />{" "}
+        <span>Tất cả</span>
+        </div>
+        <div
+        className=""
+        style={{
+          alignItems: "center",
+          display: "flex",
+          gap: "10px",
+          marginTop: "5px",
+        }}
+        >
+        <input
+          type="radio"
+          checked={valueTinhtrang === "Đã đối soát"}
+          value="Đã đối soát"
+          onChange={handleValueTinhtrang}
+          style={{backgroundColor: 'blue'}}
+          />{" "}
+        <span>Đã đối soát</span>
+        </div>
+          <div
+        className=""
+        style={{
+          alignItems: "center",
+          display: "flex",
+          gap: "10px",
+          marginTop: "5px",
+         }}
+          >
+        <input
+          type="radio"
+          checked={valueTinhtrang === "Chưa đối soát"}
+          value="Chưa đối soát"
+          onChange={handleValueTinhtrang}
+        />{" "}
+        <span>Chưa đối soát</span>
+        </div>
+        </div>
+      </div>
       <div className='loaive'>
         <p className='lv'>Loại vé</p>
         <p className='vc'>Vé cổng</p>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/styles.css';
-import ModalGoidichvu from './Modal/ModalThemGoidichvu';
+import ModalGoidichvu from './Modal/AddGoidichvu';
 
 function Goidichvu() {
   const [isSelected1, setSelected1] = useState(false);
@@ -17,7 +17,6 @@ function Goidichvu() {
       setSelected1(true);
       setSelected2(false);
     };
-  
     const handleButtonClick2 = () => {
       setSelected1(false);
       setSelected2(true);

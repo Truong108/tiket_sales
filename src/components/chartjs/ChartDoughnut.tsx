@@ -53,9 +53,6 @@ function ChartDoughnut(props: PropsData) {
       ],
     });
   }, [props.unUse, props.haveUse]);
-
-
-
   return <Doughnut  data={chartDemo} width={100} height={100} />;
 }
 

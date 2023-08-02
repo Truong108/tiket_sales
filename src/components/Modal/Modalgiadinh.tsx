@@ -1,12 +1,10 @@
 import { Button, Modal, Space } from "antd";
 import '../../css/modalQuanlive.css';
-
 import dayjs from 'dayjs';
 import { useState } from "react";
 import { collection, doc, updateDoc } from "firebase/firestore";
 import api from "../../firebase/firebaseAPI";
-import { CalendarDateValue } from "../Calendar/CalendarDateValue";
-
+import { UpdateCalendar } from "../Calendar/CalendarDateValue";
 
 interface ModalProps {
   isModalOpen: boolean;
@@ -14,7 +12,6 @@ interface ModalProps {
   valueNgaysudung: string;
   idNgaysudung: string;
 }
-
 const ModalQuanlive: React.FC<ModalProps> = ({ 
   isModalOpen, 
   onClose , 
@@ -72,7 +69,7 @@ const ModalQuanlive: React.FC<ModalProps> = ({
         marginRight: '120px',
         fontWeight: 'bold',
         marginTop: '5px'}}>Hạn sử dụng</p>
-        <CalendarDateValue dateValue={dateObject} onDateChange={handleFamilyDateChange} />
+        <UpdateCalendar dateValue={dateObject} onDateChange={handleFamilyDateChange} />
       </div>
      <Space wrap style={{ marginTop: '22px', 
       marginLeft: '70px'}}>
@@ -93,6 +90,6 @@ const ModalQuanlive: React.FC<ModalProps> = ({
         color: '#FFF'}}>Lưu</Button>
     </Space>
     </Modal>       
-    </> );
+  </> );
 }
 export default ModalQuanlive;

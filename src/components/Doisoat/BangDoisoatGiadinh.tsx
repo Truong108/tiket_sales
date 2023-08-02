@@ -31,7 +31,6 @@ const BangDoisoatve: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}) =>
       setData(fetchedData);
       setIsDataFetched(true);
     };
-  
     useEffect(() => {
       if (!isDataFetched) {
         fetchData();

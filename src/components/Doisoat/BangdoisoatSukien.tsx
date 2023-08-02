@@ -60,7 +60,6 @@ const BangdoisoatSukien: React.FC<TableDoisoat> = ({onfillter, sinceday, todate}
       if (!sinceday && !todate) {
         return isDoisoatMatch;
       }
-    
       if (sinceday && todate) {
         const fromDay = Number(sinceday.split("/")[0]);
         const fromMonth = Number(sinceday.split("/")[1]) - 1;

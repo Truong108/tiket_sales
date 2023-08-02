@@ -2,23 +2,20 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { DatePicker, Space, TimePicker } from "antd";
 
-
 interface CalendarValue {
   dateValue: dayjs.Dayjs | null;
   onDateChange: (date: dayjs.Dayjs | null) => void;
 }
-
-export const CalendarDateValue: React.FC<CalendarValue> = ({ dateValue, onDateChange }) => {
+export const UpdateCalendar: React.FC<CalendarValue> = ({ dateValue, onDateChange }) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
   useEffect(() => {
     setSelectedDate(dateValue);
   }, [dateValue]);
-  const handleDateChange = (date: any) => {
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
     const dayjsDate = date ? dayjs(date) : null; 
     setSelectedDate(dayjsDate); 
     onDateChange(dayjsDate); 
   };
-
   return (
     <Space direction="vertical" size={12} style={{ margin: "0" }}>
       <DatePicker
@@ -33,20 +30,16 @@ export const CalendarDateValue: React.FC<CalendarValue> = ({ dateValue, onDateCh
 
 interface TimeValue {
   timeValue: dayjs.Dayjs | null;
-  onTimechange: (time: any) => void;
+  onTimeChange: (time: any) => void;
 }
-
-export const CalendarTimeValue: React.FC<TimeValue> = ({
-  timeValue,
-  onTimechange,
-}) => {
+export const UpdateTimeCalendar: React.FC<TimeValue> = ({timeValue,onTimeChange,}) => {
   const [selectedTime, setSelectedTime] = useState<dayjs.Dayjs | null>(null);
   useEffect(() => {
     setSelectedTime(timeValue);
   }, [timeValue]);
   const handleChaneTime = (time: any) => {
     setSelectedTime(time);
-    onTimechange(time);
+    onTimeChange(time);
   };
   return (
     <Space style={{ margin: "0" }}>
@@ -60,3 +53,4 @@ export const CalendarTimeValue: React.FC<TimeValue> = ({
     </Space>
   );
 };
+ 
